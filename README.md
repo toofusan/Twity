@@ -27,10 +27,10 @@ using twitter;
 
 public class EventHandler : MonoBehaviour {
   void Start () {
-  		twitter.Client.consumerKey       = "...";
-  		twitter.Client.consumerSecret    = "...";
-  		twitter.Client.accessToken       = "...";
-  		twitter.Client.accessTokenSecret = "...";
+    twitter.Client.consumerKey       = "...";
+    twitter.Client.consumerSecret    = "...";
+    twitter.Client.accessToken       = "...";
+    twitter.Client.accessTokenSecret = "...";
   }  
 }
 ```
@@ -83,7 +83,7 @@ void start() {
 
 void Callback(bool success, string response) {
   if (success) {
-    GenerateTweetCard (JsonUtility.FromJson<Tweet> (response));
+    Tweet tweet = JsonUtility.FromJson<Tweet> (response);
   } else {
     Debug.Log (response);
   }
