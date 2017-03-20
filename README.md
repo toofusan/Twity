@@ -25,7 +25,7 @@ Not Available (now in progress)
 ```C#
 using twitter;
 
-public class EventHandler : Mono Behaviour {
+public class EventHandler : MonoBehaviour {
   void Start () {
 
   		twitter.Client.consumerKey       = "...";
