@@ -27,15 +27,14 @@ using twitter;
 
 public class EventHandler : MonoBehaviour {
   void Start () {
-
   		twitter.Client.consumerKey       = "...";
   		twitter.Client.consumerSecret    = "...";
   		twitter.Client.accessToken       = "...";
   		twitter.Client.accessTokenSecret = "...";
-
   }  
 }
 ```
+
 ### GET search/tweets
 
 ```C#
@@ -48,12 +47,13 @@ void start() {
 
 void Callback(bool success, string response) {
   if (success) {
-		Debug.Log (response);
-	} else {
-		Debug.Log (response);
-	}
+    SearchTweetsResponse Response = JsonUtility.FromJson<SearchTweetsResponse> (response);
+  } else {
+    Debug.Log (response);
+  }
 }
 ```
+
 ### GET statuses/home_timeline
 
 ```C#
@@ -65,10 +65,10 @@ void start() {
 
 void Callback(bool success, string response) {
   if (success) {
-		Debug.Log (response);
-	} else {
-		Debug.Log (response);
-	}
+    StatusesHomeTimelineResponse Response = JsonUtility.FromJson<StatusesHomeTimelineResponse> (response);
+  } else {
+    Debug.Log (response);
+  }
 }
 ```
 
@@ -78,15 +78,15 @@ void Callback(bool success, string response) {
 void start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["status"] = "Tweet from Unity";
-  StartCoroutine (twitter.Client.Get ("statuses/update", parameters, new twitter.TwitterCallback (this.Callback)));
+  StartCoroutine (twitter.Client.Post ("statuses/update", parameters, new twitter.TwitterCallback (this.Callback)));
 }
 
 void Callback(bool success, string response) {
   if (success) {
-		Debug.Log (response);
-	} else {
-		Debug.Log (response);
-	}
+    GenerateTweetCard (JsonUtility.FromJson<Tweet> (response));
+  } else {
+    Debug.Log (response);
+  }
 }
 ```
 
