@@ -9,8 +9,8 @@ namespace twitter {
 	// ==============================
 	[Serializable]
 	public class Tweet {
-		public int id;
-		public string id_str;
+        public long id;
+        public string id_str;
 		public string created_at;
 		public string text;
 
@@ -31,8 +31,9 @@ namespace twitter {
 
 		public TweetUser user;
 		public Entities entities;
+        public Extended_Entities extended_entities;
 
-		public String lang;
+        public String lang;
 	}
 
 	[Serializable]
@@ -69,8 +70,8 @@ namespace twitter {
 
 	[Serializable]
 	public class Retweet {
-		public int id;
-		public string id_str;
+        public long id;
+        public string id_str;
 		public string created_at;
 		public string text;
 
