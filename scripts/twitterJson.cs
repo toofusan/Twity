@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace twitter {
+namespace Twitter {
 
-	// ==============================
-	// Basic Class
-	// ==============================
-	[Serializable]
+    #region Basic Class
+    [Serializable]
 	public class Tweet {
-        public long id;
-        public string id_str;
+		public long id;
+		public string id_str;
 		public string created_at;
 		public string text;
 
@@ -28,12 +24,11 @@ namespace twitter {
 		public string quoted_status_id_str;
 //		public string quoted_status;
 
-
 		public TweetUser user;
 		public Entities entities;
-        public Extended_Entities extended_entities;
+		public Extended_Entities extended_entities;
 
-        public String lang;
+		public String lang;
 	}
 
 	[Serializable]
@@ -70,8 +65,8 @@ namespace twitter {
 
 	[Serializable]
 	public class Retweet {
-        public long id;
-        public string id_str;
+		public long id;
+		public string id_str;
 		public string created_at;
 		public string text;
 
@@ -91,73 +86,66 @@ namespace twitter {
 		public TweetUser user;
 	}
 
-	// ==============================
-	// Entities Class
-	// ==============================
+    #endregion
+
+
+    # region Entities Class
+
+    [Serializable]
+	public class Entities {
+		public Media[] media;
+		public UserMention[] user_mentions;
+		public HashTag[] hashtags;
+	}
 	[Serializable]
-    [Serializable]
-    public class Entities
-    {
-        public Media[] media;
-        public UserMention[] user_mentions;
-        public HashTag[] hashtags;
-    }
-    [Serializable]
-    public class Extended_Entities
-    {
-        public Media[] media;
-    }
-    [Serializable]
-    public class Media
-    {
-        public int id;
-        public int id_str;
-        public string media_url;
-        public string media_url_https;
-        public string type;
-        public Video_Info video_info;
-    }
-    [Serializable]
-    public class UserMention
-    {
-        public int id;
-        public string id_str;
-        public string screen_name;
-        public string name;
-    }
-    [Serializable]
-    public class HashTag
-    {
-        public string text;
-    }
-    [Serializable]
-    public class Symbol
-    {
-        public string text;
-    }
-    [Serializable]
-    public class Video_Info
-    {
-        public long id;
-        public string id_str;
-        public string media_url;
-        public string type;
-        public Variant[] variants;
-    }
-    [Serializable]
-    public class Variant
-    {
-        public int bitrate;
-        public string content_type;
-        public string url;
-    }
+	public class Extended_Entities {
+		public Media[] media;
+	}
+	[Serializable]
+	public class Media {
+		public int id;
+		public int id_str;
+		public string media_url;
+		public string media_url_https;
+		public string type;
+		public Video_Info video_info;
+	}
+	[Serializable]
+	public class UserMention {
+		public int id;
+		public string id_str;
+		public string screen_name;
+		public string name;
+	}
+	[Serializable]
+	public class HashTag {
+		public string text;
+	}
+	[Serializable]
+	public class Symbol {
+		public string text;
+	}
+	[Serializable]
+	public class Video_Info {
+		public long id;
+		public string id_str;
+		public string media_url;
+		public string type;
+		public Variant[] variants;
+	}
+	[Serializable]
+	public class Variant {
+		public int bitrate;
+		public string content_type;
+		public string url;
+	}
+
+    #endregion
 
 
 
+    #region Response Class
 
-    // ==============================
-    // Response Class
-    // ==============================
     [Serializable]
 	public class SearchTweetsResponse {
 		public Tweet[] statuses; 
@@ -185,7 +173,8 @@ namespace twitter {
 	public class Tweets {
 		public Tweet[] items;
 	}
-		
+
+    #endregion
 }
 
 
