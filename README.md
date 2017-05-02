@@ -29,10 +29,10 @@ using twitter;
 
 public class EventHandler : MonoBehaviour {
   void Start () {
-    twitter.Client.consumerKey       = "...";
-    twitter.Client.consumerSecret    = "...";
-    twitter.Client.accessToken       = "...";
-    twitter.Client.accessTokenSecret = "...";
+    twitter.Oauth.consumerKey       = "...";
+    twitter.Oauth.consumerSecret    = "...";
+    twitter.Oauth.accessToken       = "...";
+    twitter.Oauth.accessTokenSecret = "...";
   }  
 }
 ```
