@@ -25,14 +25,14 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 ## Initialize
 
 ```C#
-using twitter;
+using Twitter;
 
 public class EventHandler : MonoBehaviour {
   void Start () {
-    twitter.Oauth.consumerKey       = "...";
-    twitter.Oauth.consumerSecret    = "...";
-    twitter.Oauth.accessToken       = "...";
-    twitter.Oauth.accessTokenSecret = "...";
+    Twitter.Oauth.consumerKey       = "...";
+    Twitter.Oauth.consumerSecret    = "...";
+    Twitter.Oauth.accessToken       = "...";
+    Twitter.Oauth.accessTokenSecret = "...";
   }  
 }
 ```
