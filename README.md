@@ -41,11 +41,13 @@ public class EventHandler : MonoBehaviour {
 ### GET search/tweets
 
 ```C#
+using Twitter;
+
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["q"] = "search word";
   parameters ["count"] = 30.ToString();;
-  StartCoroutine (twitter.Client.Get ("search/tweets", parameters, new twitter.TwitterCallback (this.Callback)));
+  StartCoroutine (Client.Get ("search/tweets", parameters, this.Callback));
 }
 
 void Callback(bool success, string response) {
@@ -60,10 +62,12 @@ void Callback(bool success, string response) {
 ### GET statuses/home_timeline
 
 ```C#
+using Twitter;
+
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["count"] = 30.ToString();;
-  StartCoroutine (twitter.Client.Get ("statuses/home_timeline", parameters, new twitter.TwitterCallback (this.Callback)));
+  StartCoroutine (Client.Get ("statuses/home_timeline", parameters, this.Callback));
 }
 
 void Callback(bool success, string response) {
@@ -78,10 +82,12 @@ void Callback(bool success, string response) {
 ### POST statuses/update
 
 ```C#
+using Twitter;
+
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["status"] = "Tweet from Unity";
-  StartCoroutine (twitter.Client.Post ("statuses/update", parameters, new twitter.TwitterCallback (this.Callback)));
+  StartCoroutine (Client.Post ("statuses/update", parameters, this.Callback));
 }
 
 void Callback(bool success, string response) {
@@ -96,11 +102,13 @@ void Callback(bool success, string response) {
 ### POST statuses/retweet/:id
 ex. search tweets with the word "Unity", and retweet 5 tweets.
 ```C#
+using Twitter;
+
 void start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["q"] = "Unity";       // Search keywords
   parameters ["count"] = 5.ToString();   // Number of Tweets
-  StartCoroutine (twitter.Client.Get ("search/tweets", parameters, new twitter.TwitterCallback (this.Callback)));
+  StartCoroutine (Client.Get ("search/tweets", parameters, this.Callback));
 }
 
 void Callback(bool success, string response) {
@@ -115,7 +123,7 @@ void Callback(bool success, string response) {
 void Retweet(Tweet tweet) {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["id"] = tweet.id_str;
-  StartCoroutine (twitter.Client.Post ("statuses/retweet/" + tweet.id_str, parameters, new twitter.TwitterCallback (this.RetweetCallback)));
+  StartCoroutine (twitter.Client.Post ("statuses/retweet/" + tweet.id_str, parameters, this.RetweetCallback));
 }
 
 void RetweetCallback(bool success, string response) {
@@ -144,7 +152,7 @@ void Start() {
   StartCoroutine(stream.On(streamParameters, this.OnStream));
 }
 
-void Callback(string response) {
+void OnStream(string response) {
   try
     {
       GenerateTweetCard(JsonUtility.FromJson<Tweet>(response));
