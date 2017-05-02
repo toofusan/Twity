@@ -155,7 +155,7 @@ void Start() {
 void OnStream(string response) {
   try
     {
-      GenerateTweetCard(JsonUtility.FromJson<Tweet>(response));
+      Tweet tweet = JsonUtility.FromJson<Tweet>(response);
   } catch (System.ArgumentException e)
   {
     Debug.Log("Invalid Response");
