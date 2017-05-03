@@ -16,8 +16,8 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 
 ## Stream API
 
-- POST statuses/filter : Available
-- GET  statuses/sample : Available
+- POST statuses/filter : partly Available(beta)
+- GET  statuses/sample : partly Available(beta)
 - UserStreams : Not Available (now in progress)
 
 # Usage
