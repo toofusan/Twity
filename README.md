@@ -14,7 +14,7 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 - GET  : Available (Except Media Upload)
 - POST : Available (Except Media Upload)
 
-## Stream API
+## Streaming API
 
 - POST statuses/filter : partly Available(beta)
 - GET  statuses/sample : partly Available(beta)
@@ -167,3 +167,8 @@ See https://dev.twitter.com/streaming/reference for more Methods.
 ## Response class
 See `TwitterJson.cs`, and https://dev.twitter.com/overview/api/tweets , https://dev.twitter.com/overview/api/users , https://dev.twitter.com/overview/api/entities , https://dev.twitter.com/overview/api/entities-in-twitter-objects .
 You can modify `TwitterJson.cs` to get a response item.
+
+
+# License
+- There are some modified code from other library. Check "TwitterOauth.cs" and "TwitterHelper.cs".
+- For other parts, MIT.
