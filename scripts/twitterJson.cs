@@ -4,32 +4,38 @@ namespace Twitter {
 
     #region Basic Class
     [Serializable]
-	public class Tweet {
-		public long id;
-		public string id_str;
-		public string created_at;
-		public string text;
+    public class TweetBase
+    {
+        public long id;
+        public string id_str;
+        public string created_at;
+        public string text;
 
-		public string in_reply_to_screen_name;
-		public int in_reply_to_status_id;
-		public string in_reply_to_status_id_str;
-		public int in_reply_to_user_id;
-		public string in_reply_to_user_id_str;
-		public bool retweeted;
-		public int retweet_count;
-//		public string retweeted_status = null;
-		public bool favorited;
-		public int favorite_count;
-		public int quoted_status_id;
-		public string quoted_status_id_str;
-//		public string quoted_status;
+        public string in_reply_to_screen_name;
+        public int in_reply_to_status_id;
+        public string in_reply_to_status_id_str;
+        public int in_reply_to_user_id;
+        public string in_reply_to_user_id_str;
+        public bool retweeted;
+        public int retweet_count;
+        public bool favorited;
+        public int favorite_count;
+        public bool is_quote_status;
+        public int quoted_status_id;
+        public string quoted_status_id_str;
 
-		public TweetUser user;
-		public Entities entities;
-		public Extended_Entities extended_entities;
+        public string lang;
 
-		public String lang;
-	}
+        public TweetUser user;
+        public Entities entities;
+        public Extended_Entities extended_entities;
+    }
+
+    [Serializable]
+    public class Tweet: TweetBase
+    {
+        public TweetBase retweeted_status;
+    }
 
 	[Serializable]
 	public class TweetUser {
@@ -61,29 +67,6 @@ namespace Twitter {
 
 //		public Tweet status;
 
-	}
-
-	[Serializable]
-	public class Retweet {
-		public long id;
-		public string id_str;
-		public string created_at;
-		public string text;
-
-		public string in_reply_to_screen_name;
-		public int in_reply_to_status_id;
-		public string in_reply_to_status_id_str;
-		public int in_reply_to_user_id;
-		public string in_reply_to_user_id_str;
-		public bool retweeted;
-		public int retweet_count;
-		public string retweeted_status = "";
-		public bool favorited;
-		public int favorite_count;
-		public int quoted_status_id;
-		public string quoted_status_id_str;
-
-		public TweetUser user;
 	}
 
     #endregion
@@ -168,6 +151,13 @@ namespace Twitter {
 	public class FriendsListResponse {
 		public TweetUser[] users;
 	}
+
+
+    [Serializable]
+    public class FriendsidsResponse
+    {
+        public int[] ids;
+    }
 
 	[Serializable]
 	public class Tweets {
