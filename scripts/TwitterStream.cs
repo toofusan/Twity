@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -53,11 +54,12 @@ namespace Twitter
         {
             Debug.Log("Connection Aborted");
             request.Abort();
-
         }
 
 
     }
+
+    #region DownloadHandler
 
     public class StreamingDownloadHandler : DownloadHandlerScript
     {
@@ -76,12 +78,21 @@ namespace Twitter
                 Debug.Log("LoggingDownloadHandler :: ReceiveData - received a null/empty buffer");
                 return false;
             }
-            string response = System.Text.Encoding.ASCII.GetString(data);
-            callback(JsonHelper.ArrayToObject(response));
-            return true;
+            string response = Encoding.ASCII.GetString(data);
+            try
+            {
+                callback(JsonHelper.ArrayToObject(response));
+                return true;
+            } catch (System.ArgumentException e)
+            {
+                //Debug.Log(e.ToString());
+                return true;
+            }
+            
         }
 
     }
+    #endregion
 
     public enum Type
     {
@@ -91,5 +102,151 @@ namespace Twitter
         Site    // GET site
     }
 
+
+    #region Parameters for statuses/filter
+    public class FilterTrack
+    {
+        private List<string> tracks;
+
+        public FilterTrack(string track)
+        {
+            tracks = new List<string>();
+            tracks.Add(track);
+        }
+        public FilterTrack(List<string> tracks)
+        {
+            this.tracks = tracks;
+        }
+        public void AddTrack(string track)
+        {
+            tracks.Add(track);
+        }
+        public void AddTracks(List<string> tracks)
+        {
+            foreach (string track in tracks)
+            {
+                this.tracks.Add(track);
+            }
+        }
+        public string GetKey()
+        {
+            return "track";
+        }
+        public string GetValue()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string track in tracks)
+            {
+                sb.Append(track + ",");
+            }
+            sb.Length -= 1;
+            return sb.ToString();
+        }
+    }
+
+
+    public class FilterLocations
+    {
+        private List<Coordinate> locations;
+
+        public FilterLocations()
+        {
+            locations = new List<Coordinate>();
+            locations.Add(new Coordinate(-180f, -90f));
+            locations.Add(new Coordinate( 180f,  90f));
+        }
+        public FilterLocations(Coordinate southwest, Coordinate northeast)
+        {
+            locations = new List<Coordinate>();
+            locations.Add(southwest);
+            locations.Add(northeast);
+        }
+        public void AddLocation(Coordinate southwest, Coordinate northeast)
+        {
+            locations.Add(southwest);
+            locations.Add(northeast);
+        }
+        public string GetKey()
+        {
+            return "locations";
+        }
+        public string GetValue()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(Coordinate location in locations)
+            {
+                sb.Append(location.lng.ToString("F1") + "," + location.lat.ToString("F1") + ",");
+            }
+            sb.Length -= 1;
+            return sb.ToString();
+        }
+    }
+
+    public class Coordinate
+    {
+        public float lng { get; set; }
+        public float lat { get; set; }
+
+        public Coordinate(float lng, float lat)
+        {
+            this.lng = lng;
+            this.lat = lat;
+        }
+    }
+
+    public class FilterFollow
+    {
+        private List<string> screen_names;
+        private List<int> ids;
+
+        public FilterFollow(List<string> screen_names)
+        {
+            this.screen_names = screen_names;
+        }
+        public FilterFollow(List<int> ids)
+        {
+            this.ids = ids;
+        }
+        public FilterFollow(int id)
+        {
+            ids = new List<int>();
+            ids.Add(id);
+        }
+        public void AddId(int id)
+        {
+            ids.Add(id);
+        }
+        public void AddIds(List<int> ids)
+        {
+            foreach(int id in ids)
+            {
+                this.ids.Add(id);
+            }
+        }
+        public string GetKey()
+        {
+            return "follow";
+        }
+        public string GetValue()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (ids.Count > 0)
+            {
+                foreach (int id in ids)
+                {
+                    sb.Append(id.ToString() + ",");
+                }
+            } else
+            {
+                foreach (string screen_name in screen_names)
+                {
+                    sb.Append(screen_name + ",");
+                }
+            }
+            sb.Length -= 1;
+            return sb.ToString();
+        }
+    }
+    #endregion
 }
 

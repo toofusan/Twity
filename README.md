@@ -148,7 +148,12 @@ Stream stream;
 void Start() {
   stream = new Stream(Type.Filter);
   Dictionary<string, string> streamParameters = new Dictionary<string, string>();
-  streamParameters.Add("track", "iPhone");
+
+  List<string> tracks = new List<string>();
+  tracks.Add("Unity");
+  tracks.Add("Twitter");
+  Twitter.FilterTrack filterTrack = new Twitter.FilterTrack(tracks);
+  streamParameters.Add(filterTrack.GetKey(), filterTrack.GetValue());
   StartCoroutine(stream.On(streamParameters, this.OnStream));
 }
 
