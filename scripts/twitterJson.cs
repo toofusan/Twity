@@ -4,7 +4,7 @@ namespace Twitter {
 
     #region Basic Class
     [Serializable]
-    public class TweetBase
+    public class TweetObject
     {
         public long id;
         public string id_str;
@@ -26,20 +26,24 @@ namespace Twitter {
 
         public string lang;
 
-        public TweetUser user;
         public Entities entities;
         public Extended_Entities extended_entities;
     }
+    [Serializable]
+    public class TweetObjectWithUser: TweetObject
+    {
+        public TweetUser user;
+    }
 
     [Serializable]
-    public class Tweet: TweetBase
+    public class Tweet: TweetObjectWithUser
     {
-        public TweetBase retweeted_status;
+        public TweetObjectWithUser retweeted_status;
     }
 
 	[Serializable]
 	public class TweetUser {
-		public int id;
+		public long id;
 		public string id_str;
 		public string name;
 		public string screen_name;
@@ -65,7 +69,7 @@ namespace Twitter {
 		public bool follow_request_sent;
 		public int listed_count;
 
-//		public Tweet status;
+		public TweetObject status;
 
 	}
 
@@ -156,7 +160,7 @@ namespace Twitter {
     [Serializable]
     public class FriendsidsResponse
     {
-        public int[] ids;
+        public long[] ids;
     }
 
 	[Serializable]

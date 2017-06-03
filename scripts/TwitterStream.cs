@@ -197,28 +197,28 @@ namespace Twitter
     public class FilterFollow
     {
         private List<string> screen_names;
-        private List<int> ids;
+        private List<long> ids;
 
         public FilterFollow(List<string> screen_names)
         {
             this.screen_names = screen_names;
         }
-        public FilterFollow(List<int> ids)
+        public FilterFollow(List<long> ids)
         {
             this.ids = ids;
         }
-        public FilterFollow(int id)
+        public FilterFollow(long id)
         {
-            ids = new List<int>();
+            ids = new List<long>();
             ids.Add(id);
         }
-        public void AddId(int id)
+        public void AddId(long id)
         {
             ids.Add(id);
         }
-        public void AddIds(List<int> ids)
+        public void AddIds(List<long> ids)
         {
-            foreach(int id in ids)
+            foreach(long id in ids)
             {
                 this.ids.Add(id);
             }
@@ -232,7 +232,7 @@ namespace Twitter
             StringBuilder sb = new StringBuilder();
             if (ids.Count > 0)
             {
-                foreach (int id in ids)
+                foreach (long id in ids)
                 {
                     sb.Append(id.ToString() + ",");
                 }
