@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Twitter
@@ -16,6 +17,17 @@ namespace Twitter
                 parameters.Add(APIParam.Key, APIParam.Value);
             }
             return parameters;
+        }
+
+        public static string GenerateRequestparams(SortedDictionary<string, string> parameters)
+        {
+            StringBuilder requestParams = new StringBuilder();
+            foreach (KeyValuePair<string, string> param in parameters)
+            {
+                requestParams.Append(Helper.UrlEncode(param.Key) + "=" + Helper.UrlEncode(param.Value) + "&");
+            }
+            requestParams.Length -= 1; // Remove "&" at the last of string
+            return requestParams.ToString();
         }
 
         // The below helper method is modified from "WebRequestBuilder.cs" in Twitterizer(http://www.twitterizer.net/).

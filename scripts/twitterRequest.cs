@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -18,54 +18,84 @@ namespace Twitter
             string REQUEST_URL = "https://api.twitter.com/1.1/" + APIPath + ".json";
             SortedDictionary<string, string> parameters = Helper.ConvertToSortedDictionary(APIParams);
 
-            string requestURL = REQUEST_URL + "?" + GenerateRequestparams(parameters);
+            string requestURL = REQUEST_URL + "?" + Helper.GenerateRequestparams(parameters);
             UnityWebRequest request = UnityWebRequest.Get(requestURL);
+            request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded");
 
             yield return SendRequest(request, parameters, "GET", REQUEST_URL, callback);
         }
 
         public static IEnumerator Post(string APIPath, Dictionary<string, string> APIParams, TwitterCallback callback)
         {
-            string REQUEST_URL = "https://api.twitter.com/1.1/" + APIPath + ".json";
-            SortedDictionary<string, string> parameters = Helper.ConvertToSortedDictionary(APIParams);
-
-            WWWForm form = new WWWForm();
-            foreach (KeyValuePair<string, string> parameter in APIParams)
+            List<string> endpointForFormdata = new List<string>
             {
-                form.AddField(parameter.Key, parameter.Value);
+                "media/upload",
+                "account/update_profile_image",
+                "account/update_profile_banner",
+                "account/update_profile_background_image"
+            };
+
+            string REQUEST_URL = "";
+            if (APIPath.Contains("media/"))
+            {
+                REQUEST_URL = "https://upload.twitter.com/1.1/" + APIPath + ".json";
+            } else
+            {
+                REQUEST_URL = "https://api.twitter.com/1.1/" + APIPath + ".json";
             }
 
-            UnityWebRequest request = UnityWebRequest.Post(REQUEST_URL, form);
-            yield return SendRequest(request, parameters, "POST", REQUEST_URL, callback);
+            WWWForm form = new WWWForm();
+            SortedDictionary<string, string> parameters = new SortedDictionary<string, string>();
 
+            if (endpointForFormdata.IndexOf(APIPath) != -1)
+            {
+                // multipart/form-data
+
+                foreach (KeyValuePair<string, string> parameter in APIParams)
+                {
+                    if (parameter.Key.Contains("media"))
+                    {
+                        form.AddBinaryData("media", Convert.FromBase64String(parameter.Value), "", "");
+                    }
+                    else if (parameter.Key == "image")
+                    {
+                        form.AddBinaryData("image", Convert.FromBase64String(parameter.Value), "", "");
+                    }
+                    else if (parameter.Key == "banner")
+                    {
+                        form.AddBinaryData("banner", Convert.FromBase64String(parameter.Value), "", "");
+                    }
+                    else
+                    {
+                        form.AddField(parameter.Key, parameter.Value);
+                    }
+                }
+
+                UnityWebRequest request = UnityWebRequest.Post(REQUEST_URL, form);
+                yield return SendRequest(request, parameters, "POST", REQUEST_URL, callback);
+            }
+            else
+            {
+                // application/x-www-form-urlencoded
+
+                parameters = Helper.ConvertToSortedDictionary(APIParams);
+                foreach (KeyValuePair<string, string> parameter in APIParams)
+                {
+                    form.AddField(parameter.Key, parameter.Value);
+                }
+
+                UnityWebRequest request = UnityWebRequest.Post(REQUEST_URL, form);
+                request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded");
+                yield return SendRequest(request, parameters, "POST", REQUEST_URL, callback);
+
+            }
         }
-
         #endregion
 
         #region RequestHelperMethods
 
-        private static void SetAPIParams(SortedDictionary<string, string> parameters, Dictionary<string, string> APIParams)
-        {
-            foreach (KeyValuePair<string, string> APIParam in APIParams)
-            {
-                parameters.Add(APIParam.Key, APIParam.Value);
-            }
-        }
-
-        private static string GenerateRequestparams(SortedDictionary<string, string> parameters)
-        {
-            StringBuilder requestParams = new StringBuilder();
-            foreach (KeyValuePair<string, string> param in parameters)
-            {
-                requestParams.Append(Helper.UrlEncode(param.Key) + "=" + Helper.UrlEncode(param.Value) + "&");
-            }
-            requestParams.Length -= 1; // Remove "&" at the last of string
-            return requestParams.ToString();
-        }
-
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
-            request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded");
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
             yield return request.Send();
 
@@ -75,7 +105,7 @@ namespace Twitter
             }
             else
             {
-                if (request.responseCode == 200)
+                if (request.responseCode == 200 || request.responseCode == 201)
                 {
                     callback(true, JsonHelper.ArrayToObject(request.downloadHandler.text));
                 }

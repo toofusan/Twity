@@ -11,8 +11,9 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 
 ## REST API
 
-- GET  : Available (Except Media Upload)
-- POST : Available (Except Media Upload)
+- GET  : Available
+- POST : Available
+-- Chunked POST "media/upload" (INIT/APPEND/FINALIZE) is not available yet (now in progress)
 
 ## Streaming API
 
@@ -134,6 +135,43 @@ void RetweetCallback(bool success, string response) {
   }
 }
 ```
+
+### POST media/Upload
+```C#
+using Twitter;
+
+void start() {
+  byte[] imgBinary = File.ReadAllBytes(path/to/the/file);
+  string imgbase64 = System.Convert.ToBase64String(imgBinary);
+
+  Dictionary<string, string> parameters = new Dictionary<string, string>();
+  parameters["media_data"] = imgbase64;
+  parameters["additional_owners"] = "additional owner if you have";
+  StartCoroutine (Client.Post ("media/Upload", parameters, MediaUploadCallback));
+}
+
+void MediaUploadCallback(bool success, string response) {
+  if (success) {
+    UploadMedia media = JsonUtility.FromJson<UploadMedia>(response);
+
+    Dictionary<string, string> parameters = new Dictionary<string, string>();
+    parameters["media_ids"] = media.media_id.ToString();
+    parameters["status"] = "Tweet text with image";
+    StartCoroutine (Client.Post ("statuses/update", parameters, StatusesUpdateCallback));
+  } else {
+    Debug.Log (response);
+  }
+}
+
+void StatusesUpdateCallback(bool success, string response) {
+  if (success) {
+    Tweet tweet = JsonUtility.FromJson<Tweet> (response);
+  } else {
+    Debug.Log (response);
+  }
+}
+```
+
 See https://dev.twitter.com/rest/reference for more Methods.
 
 

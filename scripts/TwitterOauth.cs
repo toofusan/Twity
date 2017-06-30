@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using UnityEngine;
 
 namespace Twitter
 {
@@ -31,6 +32,7 @@ namespace Twitter
             authHeader += requestParamsString.ToString() + requestSignature;
             return authHeader;
         }
+
         #endregion
 
         #region HelperMethods

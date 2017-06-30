@@ -73,6 +73,24 @@ namespace Twitter {
 
 	}
 
+    [Serializable]
+    public class UploadMedia
+    {
+        public long media_id;
+        public string media_id_string;
+        public int size;
+        public int expires_after_secs;
+        public UploadMediaImage image;
+    }
+
+    [Serializable]
+    public class UploadMediaImage
+    {
+        public string image_type;
+        public int w;
+        public int h;
+    }
+
     #endregion
 
 
