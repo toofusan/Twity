@@ -136,7 +136,7 @@ void RetweetCallback(bool success, string response) {
 }
 ```
 
-### POST media/Upload
+### POST media/upload
 ```C#
 using Twitter;
 
@@ -147,7 +147,7 @@ void start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters["media_data"] = imgbase64;
   parameters["additional_owners"] = "additional owner if you have";
-  StartCoroutine (Client.Post ("media/Upload", parameters, MediaUploadCallback));
+  StartCoroutine (Client.Post ("media/upload", parameters, MediaUploadCallback));
 }
 
 void MediaUploadCallback(bool success, string response) {
