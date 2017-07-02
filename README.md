@@ -17,9 +17,9 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 
 ## Streaming API
 
-- POST statuses/filter : partly Available(beta)
-- GET  statuses/sample : partly Available(beta)
-- UserStreams : Not Available (now in progress)
+- POST statuses/filter : Available(beta)
+- GET  statuses/sample : Available(beta)
+- UserStreams : Available(beta)
 
 # Usage
 
@@ -184,7 +184,7 @@ using Twitter;
 Stream stream;
 
 void Start() {
-  stream = new Stream(Type.Filter);
+  stream = new Stream(StreamType.PublicFilter);
   Dictionary<string, string> streamParameters = new Dictionary<string, string>();
 
   List<string> tracks = new List<string>();
@@ -195,20 +195,64 @@ void Start() {
   StartCoroutine(stream.On(streamParameters, this.OnStream));
 }
 
-void OnStream(string response) {
+void OnStream(string response, StreamMessageType messageType) {
   try
+  {
+    if(messageType == StreamMessageType.Tweet)
     {
       Tweet tweet = JsonUtility.FromJson<Tweet>(response);
-  } catch (System.ArgumentException e)
+    }
+  }
+  catch (System.Exception e)
   {
-    Debug.Log("Invalid Response");
+    Debug.Log(e);
   }
 }
 ```
+
+### User Stream
+```C#
+using Twitter;
+
+Stream stream;
+
+void Start() {
+  stream = new Stream(StreamType.User);
+  Dictionary<string, string> streamParameters = new Dictionary<string, string>();
+
+  StartCoroutine(stream.On(streamParameters, OnStream));
+}
+
+void OnStream(string response, StreamMessageType messageType) {
+  try
+  {
+    if(messageType == StreamMessageType.Tweet)
+    {
+      Tweet tweet = JsonUtility.FromJson<Tweet>(response);
+    }
+    else if(messageType == StreamMessageType.StreamEvent)
+    {
+      StreamEvent streamEvent = JsonUtility.FromJson<StreamEvent>(response);
+      Debug.Log(streamEvent.event_name); // Response Key 'event' is replaced 'event_name' in this library.
+    }
+    else if(messageType == StreamMessageType.FriendsList)
+    {
+      FriendsList friendsList = JsonUtility.FromJson<FriendsList>(response);
+    }
+  }
+  catch (System.Exception e)
+  {
+    Debug.Log(e);
+  }
+}
+```
+See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://dev.twitter.com/streaming/overview/messages-types#withheld_content_notices .
+
 See https://dev.twitter.com/streaming/reference for more Methods.
 
 ## Response class
 See `TwitterJson.cs`, and https://dev.twitter.com/overview/api/tweets , https://dev.twitter.com/overview/api/users , https://dev.twitter.com/overview/api/entities , https://dev.twitter.com/overview/api/entities-in-twitter-objects .
+
 You can modify `TwitterJson.cs` to get a response item.
 
 

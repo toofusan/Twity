@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 namespace Twitter
 {
 
-    public delegate void TwitterStreamCallback(string response);
+    public delegate void TwitterStreamCallback(string response, StreamMessageType messageType);
 
     public class Stream
     {
@@ -15,17 +15,17 @@ namespace Twitter
         private string REQUEST_URL;
         private UnityWebRequest request;
 
-        public Stream(Type type)
+        public Stream(StreamType type)
         {
             string[] endpoints = { "statuses/filter", "statuses/sample", "user", "site" };
 
-            if (type == Type.Filter || type == Type.Sample)
+            if (type == StreamType.PublicFilter || type == StreamType.PublicSample)
             {
                 REQUEST_URL = "https://stream.twitter.com/1.1/" + endpoints[(int)type] + ".json";
-            } else if (type == Type.User)
+            } else if (type == StreamType.User)
             {
                 REQUEST_URL = "https://userstream.twitter.com/1.1/user.json";
-            } else if (type == Type.Site)
+            } else if (type == StreamType.Site)
             {
                 REQUEST_URL = "https://sitestream.twitter.com/1.1/site.json";
             }
@@ -65,6 +65,7 @@ namespace Twitter
     {
 
         TwitterStreamCallback callback;
+        StreamMessageType messageType;
 
         public StreamingDownloadHandler(TwitterStreamCallback callback)
         {
@@ -79,28 +80,109 @@ namespace Twitter
                 return false;
             }
             string response = Encoding.ASCII.GetString(data);
+            response = response.Replace("\"event\":", "\"event_name\":");
+            messageType = StreamMessageType.None;
+            CheckMessageType(response);
+
             try
             {
-                callback(JsonHelper.ArrayToObject(response));
+                callback(JsonHelper.ArrayToObject(response), messageType);
                 return true;
-            } catch (System.ArgumentException e)
+            } catch (System.Exception e)
             {
-                //Debug.Log(e.ToString());
+                Debug.Log("ReceiveData Error : " + e.ToString());
                 return true;
             }
             
         }
 
-    }
-    #endregion
+        private void CheckMessageType(string data)
+        {
+            try
+            {
+                Tweet tweet = JsonUtility.FromJson<Tweet>(data);
+                if (tweet.text != null && tweet.id_str != null)
+                {
+                    messageType = StreamMessageType.Tweet;
+                    return;
+                }
 
-    public enum Type
-    {
-        Filter, // POST statuses/filter
-        Sample, // GET statuses/sample
-        User,   // GET user
-        Site    // GET site
+                StreamEvent streamEvent = JsonUtility.FromJson<StreamEvent>(data);
+                if (streamEvent.event_name != null)
+                {
+                    messageType = StreamMessageType.StreamEvent;
+                    return;
+                }
+
+                FriendsList friendsList = JsonUtility.FromJson<FriendsList>(data);
+                if (friendsList.friends != null)
+                {
+                    messageType = StreamMessageType.FriendsList;
+                    return;
+                }
+
+                DirectMessage directMessage = JsonUtility.FromJson<DirectMessage>(data);
+                if (directMessage.recipient_screen_name != null)
+                {
+                    messageType = StreamMessageType.DirectMessage;
+                    return;
+                }
+
+                StatusDeletionNotice statusDeletionNotice = JsonUtility.FromJson<StatusDeletionNotice>(data);
+                if (statusDeletionNotice.delete != null)
+                {
+                    messageType = StreamMessageType.StatusDeletionNotice;
+                    return;
+                }
+
+                LocationDeletionNotice locationDeletionNotice = JsonUtility.FromJson<LocationDeletionNotice>(data);
+                if (locationDeletionNotice.scrub_geo != null)
+                {
+                    messageType = StreamMessageType.LocationDeletionNotice;
+                    return;
+                }
+
+                LimitNotice limitNotice = JsonUtility.FromJson<LimitNotice>(data);
+                if (limitNotice.limit != null)
+                {
+                    messageType = StreamMessageType.LimitNotice;
+                    return;
+                }
+
+                WithheldContentNotice withheldContentNotice = JsonUtility.FromJson<WithheldContentNotice>(data);
+                if (withheldContentNotice.status_withheld != null || withheldContentNotice.user_withheld != null)
+                {
+                    messageType = StreamMessageType.WithheldContentNotice;
+                    return;
+                }
+
+                DisconnectMessage disconnectMessage = JsonUtility.FromJson<DisconnectMessage>(data);
+                if (disconnectMessage.disconnect != null)
+                {
+                    messageType = StreamMessageType.DisconnectMessage;
+                    return;
+                }
+
+                StallWarning stallWarning = JsonUtility.FromJson<StallWarning>(data);
+                if (stallWarning.warning != null)
+                {
+                    messageType = StreamMessageType.StallWarning;
+                    return;
+                }
+
+                messageType = StreamMessageType.None;
+                return;
+
+            } catch (System.Exception e)
+            {
+                Debug.Log("CheckMessageType Error : " + e.ToString());
+                messageType = StreamMessageType.None;
+                return;
+            }
+        }
     }
+
+    #endregion
 
 
     #region Parameters for statuses/filter
