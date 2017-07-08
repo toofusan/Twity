@@ -48,7 +48,7 @@ void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["q"] = "search word";
   parameters ["count"] = 30.ToString();;
-  StartCoroutine (Client.Get ("search/tweets", parameters, this.Callback));
+  StartCoroutine (Client.Get ("search/tweets", parameters, Callback));
 }
 
 void Callback(bool success, string response) {
@@ -68,7 +68,7 @@ using Twitter;
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["count"] = 30.ToString();;
-  StartCoroutine (Client.Get ("statuses/home_timeline", parameters, this.Callback));
+  StartCoroutine (Client.Get ("statuses/home_timeline", parameters, Callback));
 }
 
 void Callback(bool success, string response) {
@@ -88,7 +88,7 @@ using Twitter;
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["status"] = "Tweet from Unity";
-  StartCoroutine (Client.Post ("statuses/update", parameters, this.Callback));
+  StartCoroutine (Client.Post ("statuses/update", parameters, Callback));
 }
 
 void Callback(bool success, string response) {
@@ -109,7 +109,7 @@ void start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["q"] = "Unity";       // Search keywords
   parameters ["count"] = 5.ToString();   // Number of Tweets
-  StartCoroutine (Client.Get ("search/tweets", parameters, this.Callback));
+  StartCoroutine (Client.Get ("search/tweets", parameters, Callback));
 }
 
 void Callback(bool success, string response) {
@@ -124,7 +124,7 @@ void Callback(bool success, string response) {
 void Retweet(Tweet tweet) {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["id"] = tweet.id_str;
-  StartCoroutine (twitter.Client.Post ("statuses/retweet/" + tweet.id_str, parameters, this.RetweetCallback));
+  StartCoroutine (twitter.Client.Post ("statuses/retweet/" + tweet.id_str, parameters, RetweetCallback));
 }
 
 void RetweetCallback(bool success, string response) {
@@ -192,7 +192,7 @@ void Start() {
   tracks.Add("Twitter");
   Twitter.FilterTrack filterTrack = new Twitter.FilterTrack(tracks);
   streamParameters.Add(filterTrack.GetKey(), filterTrack.GetValue());
-  StartCoroutine(stream.On(streamParameters, this.OnStream));
+  StartCoroutine(stream.On(streamParameters, OnStream));
 }
 
 void OnStream(string response, StreamMessageType messageType) {
@@ -246,7 +246,7 @@ void OnStream(string response, StreamMessageType messageType) {
   }
 }
 ```
-See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://dev.twitter.com/streaming/overview/messages-types#withheld_content_notices .
+See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://dev.twitter.com/streaming/overview/messages-types .
 
 See https://dev.twitter.com/streaming/reference for more Methods.
 
