@@ -3,7 +3,7 @@
 
     public enum StreamMessageType
     {
-        // See detail at https://dev.twitter.com/streaming/overview/messages-types#withheld_content_notices
+        // See detail at https://dev.twitter.com/streaming/overview/messages-types
 
         Tweet,                  // A Tweet has been posted.
         StatusDeletionNotice,   // A given Tweet has been deleted.
