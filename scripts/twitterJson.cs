@@ -91,23 +91,44 @@ namespace Twitter {
         public int h;
     }
 
+    [Serializable]
+    public class List
+    {
+        public string slug;
+        public string name;
+        public string created_at;
+        public string uri;
+        public int subscriber_count;
+        public long id;
+        public string id_str;
+        public int member_count;
+        public string mode;
+        public string full_name;
+        public string description;
+        public TweetUser user;
+        public bool following;
+    }
+
     #endregion
 
 
     # region Entities Class
 
     [Serializable]
-	public class Entities {
+	public class Entities
+    {
 		public Media[] media;
 		public UserMention[] user_mentions;
 		public HashTag[] hashtags;
 	}
 	[Serializable]
-	public class Extended_Entities {
+	public class Extended_Entities
+    {
 		public Media[] media;
 	}
 	[Serializable]
-	public class Media {
+	public class Media
+    {
 		public int id;
 		public int id_str;
 		public string media_url;
@@ -116,22 +137,26 @@ namespace Twitter {
 		public Video_Info video_info;
 	}
 	[Serializable]
-	public class UserMention {
+	public class UserMention
+    {
 		public long id;
 		public string id_str;
 		public string screen_name;
 		public string name;
 	}
 	[Serializable]
-	public class HashTag {
+	public class HashTag
+    {
 		public string text;
 	}
 	[Serializable]
-	public class Symbol {
+	public class Symbol
+    {
 		public string text;
 	}
 	[Serializable]
-	public class Video_Info {
+	public class Video_Info
+    {
 		public long id;
 		public string id_str;
 		public string media_url;
@@ -139,7 +164,8 @@ namespace Twitter {
 		public Variant[] variants;
 	}
 	[Serializable]
-	public class Variant {
+	public class Variant
+    {
 		public int bitrate;
 		public string content_type;
 		public string url;
@@ -150,25 +176,30 @@ namespace Twitter {
     #region Rest API Response Class
 
     [Serializable]
-	public class SearchTweetsResponse {
+	public class SearchTweetsResponse
+    {
 		public Tweet[] statuses; 
 	}
 	[Serializable]
-	public class StatusesUserTimelineResponse {
+	public class StatusesUserTimelineResponse
+    {
 		public Tweet[] items;
 	}
 	[Serializable]
-	public class StatusesHomeTimelineResponse {
+	public class StatusesHomeTimelineResponse
+    {
 		public Tweet[] items;
 	}
 
 	[Serializable]
-	public class FollowersListResponse {
+	public class FollowersListResponse
+    {
 		public TweetUser[] users;
 	}
 
 	[Serializable]
-	public class FriendsListResponse {
+	public class FriendsListResponse
+    {
 		public TweetUser[] users;
 	}
 
@@ -180,8 +211,9 @@ namespace Twitter {
     }
 
 	[Serializable]
-	public class Tweets {
-		public Tweet[] items;
+	public class Tweets
+    {
+        public Tweet[] items;
 	}
 
     #endregion
