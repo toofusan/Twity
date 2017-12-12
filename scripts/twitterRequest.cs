@@ -97,7 +97,7 @@ namespace Twitter
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
-            yield return request.Send();
+            yield return request.SendWebRequest();
 
             if (request.isNetworkError)
             {
