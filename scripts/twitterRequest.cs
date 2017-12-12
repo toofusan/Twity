@@ -99,7 +99,7 @@ namespace Twitter
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
             yield return request.Send();
 
-            if (request.isError)
+            if (request.isNetworkError)
             {
                 callback(false, JsonHelper.ArrayToObject(request.error));
             }
