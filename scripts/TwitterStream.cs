@@ -46,7 +46,7 @@ namespace Twitter
             request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded");
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, "POST", REQUEST_URL));
             request.downloadHandler = new StreamingDownloadHandler(callback);
-            yield return request.Send();
+            yield return request.SendWebRequest();
 
         }
 
