@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Twitter
+namespace Twity
 {
     public delegate void TwitterCallback(bool success, string response);
 

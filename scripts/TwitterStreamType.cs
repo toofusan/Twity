@@ -1,4 +1,4 @@
-﻿namespace Twitter
+﻿namespace Twity
 {
 
     public enum StreamMessageType

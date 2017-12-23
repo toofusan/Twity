@@ -4,7 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Twitter
+namespace Twity
 {
 
     public delegate void TwitterStreamCallback(string response, StreamMessageType messageType);

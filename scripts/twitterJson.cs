@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Twitter {
+namespace Twity {
 
     #region Basic Class
     [Serializable]
