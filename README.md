@@ -1,29 +1,30 @@
 
-Twitter API Client for Unity C#. (beta)
+# Twity
+Twitter API Client for Unity C#. (ex-name. twitter-for-unity)
 
 Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/content/536).
 
-# Environment
+## Environment
 
 - Unity 2017.2.0f3
 
-# Available API Methods
+## Available API Methods
 
-## REST API
+### REST API
 
 - GET  : Available
 - POST : Available
 -- Chunked POST "media/upload" (INIT/APPEND/FINALIZE) is not available yet (now in progress)
 
-## Streaming API
+### Streaming API
 
 - POST statuses/filter : Available(beta)
 - GET  statuses/sample : Available(beta)
 - UserStreams : Available(beta)
 
-# Usage
+## Usage
 
-## Initialize
+### Initialize
 
 ```C#
 public class EventHandler : MonoBehaviour {
@@ -35,9 +36,9 @@ public class EventHandler : MonoBehaviour {
   }  
 }
 ```
-## REST API
+### REST API
 
-### GET search/tweets
+#### GET search/tweets
 
 ```C#
 void Start() {
@@ -56,7 +57,7 @@ void Callback(bool success, string response) {
 }
 ```
 
-### GET statuses/home_timeline
+#### GET statuses/home_timeline
 
 ```C#
 void Start() {
@@ -74,7 +75,7 @@ void Callback(bool success, string response) {
 }
 ```
 
-### POST statuses/update
+#### POST statuses/update
 
 ```C#
 void Start() {
@@ -92,7 +93,7 @@ void Callback(bool success, string response) {
 }
 ```
 
-### POST statuses/retweet/:id
+#### POST statuses/retweet/:id
 ex. search tweets with the word "Unity", and retweet 5 tweets.
 ```C#
 void start() {
@@ -126,7 +127,7 @@ void RetweetCallback(bool success, string response) {
 }
 ```
 
-### POST media/upload
+#### POST media/upload
 ```C#
 void start() {
   byte[] imgBinary = File.ReadAllBytes(path/to/the/file);
@@ -163,9 +164,9 @@ void StatusesUpdateCallback(bool success, string response) {
 See https://dev.twitter.com/rest/reference for more Methods.
 
 
-## Streaming API
+### Streaming API
 
-### POST statuses/filter
+#### POST statuses/filter
 ```C#
 Twitter.Stream stream;
 
@@ -196,7 +197,7 @@ void OnStream(string response, Twitter.StreamMessageType messageType) {
 }
 ```
 
-### User Stream
+#### User Stream
 ```C#
 Twitter.Stream stream;
 
@@ -234,12 +235,12 @@ See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://
 
 See https://dev.twitter.com/streaming/reference for more Methods.
 
-## Response class
+### Response class
 See `TwitterJson.cs`, and https://dev.twitter.com/overview/api/tweets , https://dev.twitter.com/overview/api/users , https://dev.twitter.com/overview/api/entities , https://dev.twitter.com/overview/api/entities-in-twitter-objects .
 
 You can modify `TwitterJson.cs` to get a response item.
 
 
-# License
+## License
 - There are some modified code from other library. Check "TwitterOauth.cs" and "TwitterHelper.cs".
 - For other parts, MIT.
