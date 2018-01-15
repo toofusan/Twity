@@ -1,4 +1,5 @@
 ﻿using System;
+using Twity.DataModels.Entities;
 
 namespace Twity.DataModels.Core
 {
@@ -25,7 +26,7 @@ namespace Twity.DataModels.Core
 
         public string lang;
 
-        public Entities entities;
+        public Entities.Entities entities;
         public Extended_Entities extended_entities;
     }
 }
