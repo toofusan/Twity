@@ -1,1 +1,13 @@
 *.meta
+
+#Ignore Visual Studio temporary files, build results and project files as well
+*.sln
+*.csproj
+*.user
+.vs/
+
+packages
+bin
+obj
+
+App.config

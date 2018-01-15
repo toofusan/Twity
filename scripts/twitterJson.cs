@@ -29,6 +29,7 @@ namespace Twity {
         public Entities entities;
         public Extended_Entities extended_entities;
     }
+
     [Serializable]
     public class TweetObjectWithUser: TweetObject
     {

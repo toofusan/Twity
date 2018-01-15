@@ -1,6 +1,5 @@
 ﻿namespace Twity
 {
-
     public enum StreamMessageType
     {
         // See detail at https://dev.twitter.com/streaming/overview/messages-types

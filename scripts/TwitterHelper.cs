@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace Twity
 {
-
     public class Helper
     {
 
