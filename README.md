@@ -161,7 +161,7 @@ void StatusesUpdateCallback(bool success, string response) {
 }
 ```
 
-See https://dev.Twity.com/rest/reference for more Methods.
+See https://dev.twitter.com/rest/reference for more Methods.
 
 
 ### Streaming API
@@ -231,12 +231,12 @@ void OnStream(string response, Twity.StreamMessageType messageType) {
   }
 }
 ```
-See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://dev.Twity.com/streaming/overview/messages-types .
+See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://dev.twitter.com/streaming/overview/messages-types .
 
-See https://dev.Twity.com/streaming/reference for more Methods.
+See https://dev.twitter.com/streaming/reference for more Methods.
 
 ### Response class
-See `TwitterJson.cs`, and https://dev.Twity.com/overview/api/tweets , https://dev.Twity.com/overview/api/users , https://dev.Twity.com/overview/api/entities , https://dev.Twity.com/overview/api/entities-in-twitter-objects .
+See `TwitterJson.cs`, and https://dev.twitter.com/overview/api/tweets , https://dev.twitter.com/overview/api/users , https://dev.twitter.com/overview/api/entities , https://dev.twitter.com/overview/api/entities-in-twitter-objects .
 
 You can modify `TwitterJson.cs` to get a response item.
 
