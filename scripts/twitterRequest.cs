@@ -43,6 +43,7 @@ namespace Twity
             {
                 REQUEST_URL = "https://api.twitter.com/1.1/" + APIPath + ".json";
             }
+            Debug.Log(REQUEST_URL);
 
             WWWForm form = new WWWForm();
             SortedDictionary<string, string> parameters = new SortedDictionary<string, string>();
@@ -71,7 +72,20 @@ namespace Twity
                     }
                 }
 
+                
                 UnityWebRequest request = UnityWebRequest.Post(REQUEST_URL, form);
+                yield return SendRequest(request, parameters, "POST", REQUEST_URL, callback);
+            }
+            else if (APIPath == "media/metadata/createa")
+            {
+                parameters = Helper.ConvertToSortedDictionary(APIParams);
+                foreach (KeyValuePair<string, string> parameter in APIParams)
+                {
+                    form.AddField(parameter.Key, parameter.Value);
+                }
+
+                UnityWebRequest request = UnityWebRequest.Post(REQUEST_URL, form);
+                request.SetRequestHeader("ContentType", "text/plain; charset=UTF-8");
                 yield return SendRequest(request, parameters, "POST", REQUEST_URL, callback);
             }
             else
