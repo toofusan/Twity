@@ -41,6 +41,8 @@ public class EventHandler : MonoBehaviour {
 #### GET search/tweets
 
 ```C#
+using Twity.DataModels.Responses;
+
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["q"] = "search word";
@@ -50,7 +52,7 @@ void Start() {
 
 void Callback(bool success, string response) {
   if (success) {
-    Twity.SearchTweetsResponse Response = JsonUtility.FromJson<Twity.SearchTweetsResponse> (response);
+    SearchTweetsResponse Response = JsonUtility.FromJson<SearchTweetsResponse> (response);
   } else {
     Debug.Log (response);
   }
@@ -60,6 +62,8 @@ void Callback(bool success, string response) {
 #### GET statuses/home_timeline
 
 ```C#
+using Twity.DataModels.Responses;
+
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["count"] = 30.ToString();;
@@ -68,7 +72,7 @@ void Start() {
 
 void Callback(bool success, string response) {
   if (success) {
-    Twity.StatusesHomeTimelineResponse Response = JsonUtility.FromJson<Twity.StatusesHomeTimelineResponse> (response);
+    StatusesHomeTimelineResponse Response = JsonUtility.FromJson<StatusesHomeTimelineResponse> (response);
   } else {
     Debug.Log (response);
   }
@@ -78,6 +82,8 @@ void Callback(bool success, string response) {
 #### POST statuses/update
 
 ```C#
+using Twity.DataModels.Core;
+
 void Start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["status"] = "Tweet from Unity";
@@ -86,7 +92,7 @@ void Start() {
 
 void Callback(bool success, string response) {
   if (success) {
-    Twity.Tweet tweet = JsonUtility.FromJson<Twity.Tweet> (response);
+    Tweet tweet = JsonUtility.FromJson<Tweet> (response);
   } else {
     Debug.Log (response);
   }
@@ -96,6 +102,9 @@ void Callback(bool success, string response) {
 #### POST statuses/retweet/:id
 ex. search tweets with the word "Unity", and retweet 5 tweets.
 ```C#
+using Twity.DataModels.Core;
+using Twity.DataModels.Responses;
+
 void start() {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["q"] = "Unity";       // Search keywords
@@ -105,14 +114,14 @@ void start() {
 
 void Callback(bool success, string response) {
   if (success) {
-    Twity.SearchTweetsResponse Response = JsonUtility.FromJson<Twity.SearchTweetsResponse> (response);
-    foreach (Twity.Tweet tweet in Response.statuses) { Retweet (tweet); }
+    SearchTweetsResponse Response = JsonUtility.FromJson<SearchTweetsResponse> (response);
+    foreach (Tweet tweet in Response.statuses) { Retweet (tweet); }
   } else {
     Debug.Log (response);
   }
 }
 
-void Retweet(Twity.Tweet tweet) {
+void Retweet(Tweet tweet) {
   Dictionary<string, string> parameters = new Dictionary<string, string>();
   parameters ["id"] = tweet.id_str;
   StartCoroutine (Twity.Client.Post ("statuses/retweet/" + tweet.id_str, parameters, RetweetCallback));
@@ -129,6 +138,8 @@ void RetweetCallback(bool success, string response) {
 
 #### POST media/upload
 ```C#
+using Twity.DataModels.Core;
+
 void start() {
   byte[] imgBinary = File.ReadAllBytes(path/to/the/file);
   string imgbase64 = System.Convert.ToBase64String(imgBinary);
@@ -141,7 +152,7 @@ void start() {
 
 void MediaUploadCallback(bool success, string response) {
   if (success) {
-    Twity.UploadMedia media = JsonUtility.FromJson<Twity.UploadMedia>(response);
+    UploadMedia media = JsonUtility.FromJson<UploadMedia>(response);
 
     Dictionary<string, string> parameters = new Dictionary<string, string>();
     parameters["media_ids"] = media.media_id.ToString();
@@ -154,7 +165,7 @@ void MediaUploadCallback(bool success, string response) {
 
 void StatusesUpdateCallback(bool success, string response) {
   if (success) {
-    Twity.Tweet tweet = JsonUtility.FromJson<Twity.Tweet> (response);
+    Tweet tweet = JsonUtility.FromJson<Tweet> (response);
   } else {
     Debug.Log (response);
   }
@@ -168,10 +179,13 @@ See https://dev.twitter.com/rest/reference for more Methods.
 
 #### POST statuses/filter
 ```C#
-Twity.Stream stream;
+using Twity;
+using Twity.DataModels.Core;
+
+Stream stream;
 
 void Start() {
-  stream = new Stream(Twity.StreamType.PublicFilter);
+  stream = new Stream(StreamType.PublicFilter);
   Dictionary<string, string> streamParameters = new Dictionary<string, string>();
 
   List<string> tracks = new List<string>();
@@ -182,12 +196,12 @@ void Start() {
   StartCoroutine(stream.On(streamParameters, OnStream));
 }
 
-void OnStream(string response, Twity.StreamMessageType messageType) {
+void OnStream(string response, StreamMessageType messageType) {
   try
   {
-    if(messageType == Twity.StreamMessageType.Tweet)
+    if(messageType == StreamMessageType.Tweet)
     {
-      Twity.Tweet tweet = JsonUtility.FromJson<Twity.Tweet>(response);
+      Tweet tweet = JsonUtility.FromJson<Tweet>(response);
     }
   }
   catch (System.Exception e)
@@ -199,30 +213,34 @@ void OnStream(string response, Twity.StreamMessageType messageType) {
 
 #### User Stream
 ```C#
-Twity.Stream stream;
+using Twity;
+using Twity.DataModels.Core;
+using Twity.DataModels.StreamMessages;
+
+Stream stream;
 
 void Start() {
-  stream = new Stream(Twity.StreamType.User);
+  stream = new Stream(StreamType.User);
   Dictionary<string, string> streamParameters = new Dictionary<string, string>();
 
   StartCoroutine(stream.On(streamParameters, OnStream));
 }
 
-void OnStream(string response, Twity.StreamMessageType messageType) {
+void OnStream(string response, StreamMessageType messageType) {
   try
   {
-    if(messageType == Twity.StreamMessageType.Tweet)
+    if(messageType == StreamMessageType.Tweet)
     {
-      Twity.Tweet tweet = JsonUtility.FromJson<Twity.Tweet>(response);
+      Twity.Tweet tweet = JsonUtility.FromJson<Tweet>(response);
     }
-    else if(messageType == Twity.StreamMessageType.StreamEvent)
+    else if(messageType == StreamMessageType.StreamEvent)
     {
-      Twity.StreamEvent streamEvent = JsonUtility.FromJson<Twity.StreamEvent>(response);
+      StreamEvent streamEvent = JsonUtility.FromJson<StreamEvent>(response);
       Debug.Log(streamEvent.event_name); // Response Key 'event' is replaced 'event_name' in this library.
     }
-    else if(messageType == Twity.StreamMessageType.FriendsList)
+    else if(messageType == StreamMessageType.FriendsList)
     {
-      Twity.FriendsList friendsList = JsonUtility.FromJson<Twity.FriendsList>(response);
+      FriendsList friendsList = JsonUtility.FromJson<FriendsList>(response);
     }
   }
   catch (System.Exception e)
@@ -236,11 +254,11 @@ See `StreamType` and `StreamMessageType` at `TwitterStreamType.cs`. and https://
 See https://dev.twitter.com/streaming/reference for more Methods.
 
 ### Response class
-See `TwitterJson.cs`, and https://dev.twitter.com/overview/api/tweets , https://dev.twitter.com/overview/api/users , https://dev.twitter.com/overview/api/entities , https://dev.twitter.com/overview/api/entities-in-twitter-objects .
+See `DataModels/Responses/`, and https://dev.twitter.com/overview/api/tweets , https://dev.twitter.com/overview/api/users , https://dev.twitter.com/overview/api/entities , https://dev.twitter.com/overview/api/entities-in-twitter-objects .
 
-You can modify `TwitterJson.cs` to get a response item.
+You can modify `DataModels/Responses/` to get a response item.
 
 
 ## License
-- There are some modified code from other library. Check "TwitterOauth.cs" and "TwitterHelper.cs".
+- There are some modified code from other library. Check "Scripts/TwitterOauth.cs" and "Helpers/TwitterHelper.cs".
 - For other parts, MIT.
