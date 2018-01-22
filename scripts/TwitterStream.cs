@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Twity.DataModels.Core;
+using Twity.DataModels.DirectMessages;
+using Twity.DataModels.StreamMessages;
+using Twity.Helpers;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -47,7 +51,6 @@ namespace Twity
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, "POST", REQUEST_URL));
             request.downloadHandler = new StreamingDownloadHandler(callback);
             yield return request.SendWebRequest();
-
         }
 
         public void Off()
