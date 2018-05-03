@@ -7,6 +7,7 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 ## Environment
 
 - Unity 2017.2.0f3
+- Unity 2018.1.0f2
 
 ## Available API Methods
 
