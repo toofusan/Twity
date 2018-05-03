@@ -50,10 +50,10 @@ namespace Twity
             request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded");
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, "POST", REQUEST_URL));
             request.downloadHandler = new StreamingDownloadHandler(callback);
-            #if UNITY_2017_2
+            #if UNITY_2017_1
             yield return request.Send();
             #endif
-            #if UNITY_2017_3_OR_NEWER
+            #if UNITY_2017_2_OR_NEWER
             yield return request.SendWebRequest();
             #endif
         }
