@@ -50,7 +50,12 @@ namespace Twity
             request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded");
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, "POST", REQUEST_URL));
             request.downloadHandler = new StreamingDownloadHandler(callback);
+            #if UNITY_2017_2
+            yield return request.Send();
+            #endif
+            #if UNITY_2017_3_OR_NEWER
             yield return request.SendWebRequest();
+            #endif
         }
 
         public void Off()
@@ -86,7 +91,6 @@ namespace Twity
             response = response.Replace("\"event\":", "\"event_name\":");
             messageType = StreamMessageType.None;
             CheckMessageType(response);
-
             try
             {
                 callback(JsonHelper.ArrayToObject(response), messageType);

@@ -112,7 +112,12 @@ namespace Twity
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
             request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
-            yield return request.SendWebRequest();
+            #if UNITY_2017_2
+                    yield return request.Send();
+            #endif
+            #if UNITY_2017_3_OR_NEWER
+                    yield return request.SendWebRequest();
+            #endif
 
             if (request.isNetworkError)
             {
