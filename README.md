@@ -5,9 +5,11 @@ Twitter API Client for Unity C#. (ex-name. twitter-for-unity)
 Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/content/536).
 
 ## Environment
-
+- Unity 2017.1.0f3
 - Unity 2017.2.0f3
+- Unity 2017.4.2f2
 - Unity 2018.1.0f2
+(On Unity 2017.3, Streaming API doesn't work)
 
 ## Available API Methods
 
