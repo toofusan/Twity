@@ -9,6 +9,7 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 - Unity 2017.2.0f3
 - Unity 2017.4.2f2
 - Unity 2018.1.0f2
+
 (On Unity 2017.3, Streaming API doesn't work)
 
 ## Available API Methods
