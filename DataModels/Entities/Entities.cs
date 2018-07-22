@@ -8,5 +8,6 @@ namespace Twity.DataModels.Entities
         public Media[] media;
         public UserMention[] user_mentions;
         public HashTag[] hashtags;
+        public Url[] urls;
     }
 }
