@@ -215,7 +215,9 @@ void OnStream(string response, StreamMessageType messageType) {
 }
 ```
 
-#### User Stream
+#### ~~User Stream~~
+User Stream is retired from August 23rd, 2018
+https://developer.twitter.com/en/docs/accounts-and-users/subscribe-account-activity/api-reference/user-stream.html
 ```C#
 using Twity;
 using Twity.DataModels.Core;
