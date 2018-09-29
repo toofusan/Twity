@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using Twity.DataModels.Trend;
+﻿using System;
+using System.Collections;
 
-namespace Twity.DataModels.Trend {
+namespace Twity.DataModels.Trends {
 
 	[Serializable]
 	public class TrendsPlace

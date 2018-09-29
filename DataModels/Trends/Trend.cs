@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Twity.DataModels.Trend
+namespace Twity.DataModels.Trends
 {
     [Serializable]
     public class Trend
