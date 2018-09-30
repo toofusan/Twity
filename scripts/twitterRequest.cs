@@ -133,7 +133,7 @@ namespace Twity
 
             if (request.responseCode == 200 || request.responseCode == 201)
             {
-                Twity.Oauth.bearerToken = JsonUtility.FromJson<Twity.DataModels.Oauth.AccessToken>(request.downloadHandler.text).access_token;
+                Twity.Oauth.bearerToken = JsonUtility.FromJson<Twity.DataModels.Oauth.BearerToken>(request.downloadHandler.text).access_token;
                 callback(true);
             }
             else
