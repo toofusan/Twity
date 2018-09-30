@@ -22,7 +22,7 @@ namespace Twity
         #region Public Method
         public static string GenerateHeaderWithAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
-            string signature = GenerateSignatureWithAccessToken(parameters, requestMethod, requestURL);
+            string signature = GenerateSignature(parameters, requestMethod, requestURL);
 
             StringBuilder requestParamsString = new StringBuilder();
             foreach (KeyValuePair<string, string> param in parameters)
@@ -38,7 +38,7 @@ namespace Twity
         #endregion
 
         #region HelperMethods
-        private static string GenerateSignatureWithAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
+        private static string GenerateSignature(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
             AddDefaultOauthParams(parameters, consumerKey);
             if (accessToken != null && accessToken != "") parameters.Add("oauth_token", accessToken);
