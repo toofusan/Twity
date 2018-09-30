@@ -142,7 +142,7 @@ namespace Twity
             }
         }
 
-        public static IEnumerator GenerateRequestToken(TwitterCallback callback, string callbackURL)
+        public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback, string callbackURL)
         {
             string url = "https://api.twitter.com/oauth/request_token";
 
@@ -161,20 +161,25 @@ namespace Twity
                     yield return request.SendWebRequest();
             #endif
 
-            if (request.isNetworkError)
+            if (request.isNetworkError) callback(false);
+
+            if (request.responseCode == 200 || request.responseCode == 201)
             {
-                callback(false, JsonHelper.ArrayToObject(request.error));
+                string[] arr = request.downloadHandler.text.Split("&"[0]);
+                Dictionary<string, string> d = new Dictionary<string, string>();
+                foreach(string s in arr)
+                {
+                    string k = s.Split("="[0])[0];
+                    string v = s.Split("="[0])[1];
+                    d[k] = v;
+                }
+                Oauth.requestToken = d["oauth_token"];
+                Oauth.requestTokenSecret = d["oauth_token_secret"];
+                callback(true);
             }
             else
             {
-                if (request.responseCode == 200 || request.responseCode == 201)
-                {
-                    callback(true, JsonHelper.ArrayToObject(request.downloadHandler.text));
-                }
-                else
-                {
-                    callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
-                }
+                callback(false);
             }
         }
         #endregion
