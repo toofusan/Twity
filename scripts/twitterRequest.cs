@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 namespace Twity
 {
     public delegate void TwitterCallback(bool success, string response);
+    public delegate void TwitterAuthenticationCallback(bool success);
 
     public class Client
     {
@@ -107,7 +108,7 @@ namespace Twity
             }
         }
 
-        public static IEnumerator GetOauth2BearerToken(TwitterCallback callback)
+        public static IEnumerator GetOauth2BearerToken(TwitterAuthenticationCallback callback)
         {
             string url = "https://api.twitter.com/oauth2/token";
 
@@ -128,15 +129,16 @@ namespace Twity
                     yield return request.SendWebRequest();
             #endif
 
-            if (request.isNetworkError) callback(false, JsonHelper.ArrayToObject(request.error));
+            if (request.isNetworkError) callback(false);
 
             if (request.responseCode == 200 || request.responseCode == 201)
             {
-                callback(true, JsonHelper.ArrayToObject(request.downloadHandler.text));
+                Twity.Oauth.bearerToken = JsonUtility.FromJson<Twity.DataModels.Oauth.AccessToken>(request.downloadHandler.text).access_token;
+                callback(true);
             }
             else
             {
-                callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
+                callback(false);
             }
             
         }
