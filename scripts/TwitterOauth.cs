@@ -15,6 +15,8 @@ namespace Twity
         public static string consumerSecret { get; set; }
         public static string accessToken { get; set; }
         public static string accessTokenSecret { get; set; }
+
+        public static string bearerToken {get; set;}
         #endregion
 
         #region Public Method
