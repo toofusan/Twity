@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Twity.Helpers;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,6 +9,7 @@ using UnityEngine.Networking;
 namespace Twity
 {
     public delegate void TwitterCallback(bool success, string response);
+    public delegate void TwitterAuthenticationCallback(bool success);
 
     public class Client
     {
@@ -105,13 +107,56 @@ namespace Twity
 
             }
         }
+
+        public static IEnumerator GetOauth2BearerToken(TwitterAuthenticationCallback callback)
+        {
+            string url = "https://api.twitter.com/oauth2/token";
+
+            string credential = Helper.UrlEncode(Oauth.consumerKey) + ":" + Helper.UrlEncode(Oauth.consumerSecret);
+            credential = Convert.ToBase64String(Encoding.UTF8.GetBytes(credential));
+
+            WWWForm form = new WWWForm();
+            form.AddField("grant_type", "client_credentials");
+
+            UnityWebRequest request = UnityWebRequest.Post(url, form);
+            request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded;charset=UTF-8");
+            request.SetRequestHeader("Authorization", "Basic " + credential);
+
+            #if UNITY_2017_1
+                    yield return request.Send();
+            #endif
+            #if UNITY_2017_2_OR_NEWER
+                    yield return request.SendWebRequest();
+            #endif
+
+            if (request.isNetworkError) callback(false);
+
+            if (request.responseCode == 200 || request.responseCode == 201)
+            {
+                Twity.Oauth.bearerToken = JsonUtility.FromJson<Twity.DataModels.Oauth.AccessToken>(request.downloadHandler.text).access_token;
+                callback(true);
+            }
+            else
+            {
+                callback(false);
+            }
+            
+        }
         #endregion
 
         #region RequestHelperMethods
 
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
-            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
+            if (Twity.Oauth.accessToken != null && Twity.Oauth.accessToken != "")
+            {
+                request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
+            }
+            else if (Twity.Oauth.bearerToken != null && Twity.Oauth.bearerToken != "")
+            {
+                request.SetRequestHeader("Authorization", "Bearer " + Oauth.bearerToken);
+            } 
+            
             #if UNITY_2017_1
                     yield return request.Send();
             #endif

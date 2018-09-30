@@ -28,8 +28,8 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 
 ## Usage
 
-### Initialize
-
+### Authentication
+if you have access_token and access_token_secret,
 ```C#
 public class EventHandler : MonoBehaviour {
   void Start () {
@@ -40,6 +40,24 @@ public class EventHandler : MonoBehaviour {
   }  
 }
 ```
+
+if you have only consumer_key and consumer_secret,
+```C#
+public class EventHandler : MonoBehaviour {
+  void Start () {
+    Twity.Oauth.consumerKey       = "...";
+    Twity.Oauth.consumerSecret    = "...";
+    
+    StartCoroutine(Twity.Client.GetOauth2BearerToken(Callback));
+  }
+
+  private void Callback(bool success) {
+    // you write some request with application-only authentication
+    // https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
+	}
+}
+```
+
 ### REST API
 
 #### GET search/tweets
