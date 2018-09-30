@@ -148,7 +148,15 @@ namespace Twity
 
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
-            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
+            if (Twity.Oauth.accessToken != null && Twity.Oauth.accessToken != "")
+            {
+                request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
+            }
+            else if (Twity.Oauth.bearerToken != null && Twity.Oauth.bearerToken != "")
+            {
+                request.SetRequestHeader("Authorization", "Bearer " + Oauth.bearerToken);
+            } 
+            
             #if UNITY_2017_1
                     yield return request.Send();
             #endif
