@@ -38,7 +38,7 @@ namespace Twity
 
         public static string GenerateHeaderWithoutAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
-            string signature = GenerateSignatureWithoutAccessToken(parameters, requestMethod, requestURL);
+            string signature = GenerateSignatureWithAccessToken(parameters, requestMethod, requestURL);
 
             StringBuilder requestParamsString = new StringBuilder();
             foreach (KeyValuePair<string, string> param in parameters)
@@ -60,7 +60,7 @@ namespace Twity
         private static string GenerateSignatureWithAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
             AddDefaultOauthParams(parameters, consumerKey);
-            parameters.Add("oauth_token", accessToken);
+            if (accessToken != null && accessToken != "") parameters.Add("oauth_token", accessToken);
 
             StringBuilder paramString = new StringBuilder();
             foreach (KeyValuePair<string, string> param in parameters)
@@ -74,27 +74,6 @@ namespace Twity
             string signatureData = requestHeader + "&" + Helper.UrlEncode(paramString.ToString());
 
             string signatureKey = Helper.UrlEncode(consumerSecret) + "&" + Helper.UrlEncode(accessTokenSecret);
-            HMACSHA1 hmacsha1 = new HMACSHA1(Encoding.ASCII.GetBytes(signatureKey));
-            byte[] signatureBytes = hmacsha1.ComputeHash(Encoding.ASCII.GetBytes(signatureData));
-            return Convert.ToBase64String(signatureBytes);
-        }
-
-        private static string GenerateSignatureWithoutAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
-        {
-            AddDefaultOauthParams(parameters, consumerKey);
-
-            StringBuilder paramString = new StringBuilder();
-            foreach (KeyValuePair<string, string> param in parameters)
-            {
-                paramString.Append(Helper.UrlEncode(param.Key) + "=" + Helper.UrlEncode(param.Value) + "&");
-            }
-            paramString.Length -= 1; // Remove "&" at the last of string
-
-            string requestHeader = Helper.UrlEncode(requestMethod) + "&" + Helper.UrlEncode(requestURL);
-            string signatureData = requestHeader + "&" + Helper.UrlEncode(paramString.ToString());
-            Debug.Log(signatureData);
-
-            string signatureKey = Helper.UrlEncode(consumerSecret) + "&" + Helper.UrlEncode("");
             HMACSHA1 hmacsha1 = new HMACSHA1(Encoding.ASCII.GetBytes(signatureKey));
             byte[] signatureBytes = hmacsha1.ComputeHash(Encoding.ASCII.GetBytes(signatureData));
             return Convert.ToBase64String(signatureBytes);
