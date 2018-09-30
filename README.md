@@ -41,6 +41,7 @@ public class EventHandler : MonoBehaviour {
 }
 ```
 
+
 if you have only consumer_key and consumer_secret,
 ```C#
 public class EventHandler : MonoBehaviour {
@@ -57,6 +58,8 @@ public class EventHandler : MonoBehaviour {
     // https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
 	}
 }
+```
+
 
 if you want request_token,
 ```C#
@@ -65,7 +68,7 @@ public class EventHandler : MonoBehaviour {
     Twity.Oauth.consumerKey       = "...";
     Twity.Oauth.consumerSecret    = "...";
     
-    StartCoroutine(Twity.Client.GenerateRequestToken(RequestTokenCallback, "callback URL of your app"));
+    StartCoroutine(Twity.Client.GenerateRequestToken(Callback, "callback URL of your app"));
   }
 
   void Callback(bool success) {
