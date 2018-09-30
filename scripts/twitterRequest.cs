@@ -152,7 +152,7 @@ namespace Twity
             WWWForm form = new WWWForm();
 
             UnityWebRequest request = UnityWebRequest.Post(url, form);
-            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithoutAccessToken(p, "POST", url));
+            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(p, "POST", url));
             
             #if UNITY_2017_1
                     yield return request.Send();

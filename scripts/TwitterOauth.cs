@@ -35,28 +35,9 @@ namespace Twity
             authHeader += requestParamsString.ToString() + requestSignature;
             return authHeader;
         }
-
-        public static string GenerateHeaderWithoutAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
-        {
-            string signature = GenerateSignatureWithAccessToken(parameters, requestMethod, requestURL);
-
-            StringBuilder requestParamsString = new StringBuilder();
-            foreach (KeyValuePair<string, string> param in parameters)
-            {
-                requestParamsString.Append(String.Format("{0}=\"{1}\",", Helper.UrlEncode(param.Key), Helper.UrlEncode(param.Value)));
-            }
-
-            string authHeader = "OAuth realm=\"Twitter API\",";
-            string requestSignature = String.Format("oauth_signature=\"{0}\"", Helper.UrlEncode(signature));
-            authHeader += requestParamsString.ToString() + requestSignature;
-            Debug.Log(authHeader);
-            return authHeader;
-        }
-
         #endregion
 
         #region HelperMethods
-
         private static string GenerateSignatureWithAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
             AddDefaultOauthParams(parameters, consumerKey);
