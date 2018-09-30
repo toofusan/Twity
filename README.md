@@ -51,9 +51,26 @@ public class EventHandler : MonoBehaviour {
     StartCoroutine(Twity.Client.GetOauth2BearerToken(Callback));
   }
 
-  private void Callback(bool success) {
+  void Callback(bool success) {
+    if (!success) return;
     // you write some request with application-only authentication
     // https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
+	}
+}
+
+if you want request_token,
+```C#
+public class EventHandler : MonoBehaviour {
+  void Start () {
+    Twity.Oauth.consumerKey       = "...";
+    Twity.Oauth.consumerSecret    = "...";
+    
+    StartCoroutine(Twity.Client.GenerateRequestToken(RequestTokenCallback, "callback URL of your app"));
+  }
+
+  void Callback(bool success) {
+    if (!success) return;
+    // hogehoge
 	}
 }
 ```

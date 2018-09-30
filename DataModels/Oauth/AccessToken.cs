@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 
 namespace Twity.DataModels.Oauth
 {
 	[Serializable]
 	public class AccessToken
 	{
-		public string token_type;
-		public string access_token;
+		public string oauth_token;
+		public string oauth_token_secret;
+		public bool oauth_callback_confirmed;
 	}
 }

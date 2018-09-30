@@ -133,14 +133,54 @@ namespace Twity
 
             if (request.responseCode == 200 || request.responseCode == 201)
             {
-                Twity.Oauth.bearerToken = JsonUtility.FromJson<Twity.DataModels.Oauth.AccessToken>(request.downloadHandler.text).access_token;
+                Twity.Oauth.bearerToken = JsonUtility.FromJson<Twity.DataModels.Oauth.BearerToken>(request.downloadHandler.text).access_token;
                 callback(true);
             }
             else
             {
                 callback(false);
             }
+        }
+
+        public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback, string callbackURL)
+        {
+            string url = "https://api.twitter.com/oauth/request_token";
+
+            SortedDictionary<string, string> p = new SortedDictionary<string, string>();
+            p.Add("oauth_callback", callbackURL);
+
+            WWWForm form = new WWWForm();
+
+            UnityWebRequest request = UnityWebRequest.Post(url, form);
+            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(p, "POST", url));
             
+            #if UNITY_2017_1
+                    yield return request.Send();
+            #endif
+            #if UNITY_2017_2_OR_NEWER
+                    yield return request.SendWebRequest();
+            #endif
+
+            if (request.isNetworkError) callback(false);
+
+            if (request.responseCode == 200 || request.responseCode == 201)
+            {
+                string[] arr = request.downloadHandler.text.Split("&"[0]);
+                Dictionary<string, string> d = new Dictionary<string, string>();
+                foreach(string s in arr)
+                {
+                    string k = s.Split("="[0])[0];
+                    string v = s.Split("="[0])[1];
+                    d[k] = v;
+                }
+                Oauth.requestToken = d["oauth_token"];
+                Oauth.requestTokenSecret = d["oauth_token_secret"];
+                callback(true);
+            }
+            else
+            {
+                callback(false);
+            }
         }
         #endregion
 

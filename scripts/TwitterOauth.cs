@@ -17,12 +17,15 @@ namespace Twity
         public static string accessTokenSecret { get; set; }
 
         public static string bearerToken {get; set;}
+
+        public static string requestToken {get; set;}
+        public static string requestTokenSecret {get; set;}
         #endregion
 
         #region Public Method
         public static string GenerateHeaderWithAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
-            string signature = GenerateSignatureWithAccessToken(parameters, requestMethod, requestURL);
+            string signature = GenerateSignature(parameters, requestMethod, requestURL);
 
             StringBuilder requestParamsString = new StringBuilder();
             foreach (KeyValuePair<string, string> param in parameters)
@@ -35,15 +38,13 @@ namespace Twity
             authHeader += requestParamsString.ToString() + requestSignature;
             return authHeader;
         }
-
         #endregion
 
         #region HelperMethods
-
-        private static string GenerateSignatureWithAccessToken(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
+        private static string GenerateSignature(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
             AddDefaultOauthParams(parameters, consumerKey);
-            parameters.Add("oauth_token", accessToken);
+            if (accessToken != null && accessToken != "") parameters.Add("oauth_token", accessToken);
 
             StringBuilder paramString = new StringBuilder();
             foreach (KeyValuePair<string, string> param in parameters)
