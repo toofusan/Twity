@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Twity.Helpers;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -104,6 +105,40 @@ namespace Twity
                 yield return SendRequest(request, parameters, "POST", REQUEST_URL, callback);
 
             }
+        }
+
+        public static IEnumerator GetOauth2BearerToken(TwitterCallback callback)
+        {
+            string url = "https://api.twitter.com/oauth2/token";
+
+            string credential = Helper.UrlEncode(Oauth.consumerKey) + ":" + Helper.UrlEncode(Oauth.consumerSecret);
+            credential = Convert.ToBase64String(Encoding.UTF8.GetBytes(credential));
+
+            WWWForm form = new WWWForm();
+            form.AddField("grant_type", "client_credentials");
+
+            UnityWebRequest request = UnityWebRequest.Post(url, form);
+            request.SetRequestHeader("ContentType", "application/x-www-form-urlencoded;charset=UTF-8");
+            request.SetRequestHeader("Authorization", "Basic " + credential);
+
+            #if UNITY_2017_1
+                    yield return request.Send();
+            #endif
+            #if UNITY_2017_2_OR_NEWER
+                    yield return request.SendWebRequest();
+            #endif
+
+            if (request.isNetworkError) callback(false, JsonHelper.ArrayToObject(request.error));
+
+            if (request.responseCode == 200 || request.responseCode == 201)
+            {
+                callback(true, JsonHelper.ArrayToObject(request.downloadHandler.text));
+            }
+            else
+            {
+                callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
+            }
+            
         }
         #endregion
 
