@@ -56,7 +56,7 @@ public class EventHandler : MonoBehaviour {
     if (!success) return;
     // you write some request with application-only authentication
     // https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
-	}
+  }
 }
 ```
 
@@ -68,13 +68,15 @@ public class EventHandler : MonoBehaviour {
     Twity.Oauth.consumerKey       = "...";
     Twity.Oauth.consumerSecret    = "...";
     
-    StartCoroutine(Twity.Client.GenerateRequestToken(Callback, "callback URL of your app"));
+    StartCoroutine(Twity.Client.GenerateRequestToken(Callback));
   }
 
-  void Callback(bool success) {
+  void Callback(bool success, string response) {
     if (!success) return;
-    // hogehoge
-	}
+    // When request successes, response is the URL for oauth/authorize.
+    // you can display that URL to user so that they may use a web browser to access Twitter.
+    // https://developer.twitter.com/en/docs/basics/authentication/overview/pin-based-oauth
+  }
 }
 ```
 
