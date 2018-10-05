@@ -142,12 +142,12 @@ namespace Twity
             }
         }
 
-        public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback, string callbackURL)
+        public static IEnumerator GenerateRequestToken(TwitterCallback callback)
         {
             string url = "https://api.twitter.com/oauth/request_token";
 
             SortedDictionary<string, string> p = new SortedDictionary<string, string>();
-            p.Add("oauth_callback", callbackURL);
+            p.Add("oauth_callback", "oob");
 
             WWWForm form = new WWWForm();
 
@@ -161,27 +161,34 @@ namespace Twity
                     yield return request.SendWebRequest();
             #endif
 
-            if (request.isNetworkError) callback(false);
-
-            if (request.responseCode == 200 || request.responseCode == 201)
+            if (request.isNetworkError)
             {
-                string[] arr = request.downloadHandler.text.Split("&"[0]);
-                Dictionary<string, string> d = new Dictionary<string, string>();
-                foreach(string s in arr)
-                {
-                    string k = s.Split("="[0])[0];
-                    string v = s.Split("="[0])[1];
-                    d[k] = v;
-                }
-                Oauth.requestToken = d["oauth_token"];
-                Oauth.requestTokenSecret = d["oauth_token_secret"];
-                callback(true);
+                callback(false, request.error);
             }
             else
             {
-                callback(false);
+                if (request.responseCode == 200 || request.responseCode == 201)
+                {
+                    string[] arr = request.downloadHandler.text.Split("&"[0]);
+                    Dictionary<string, string> d = new Dictionary<string, string>();
+                    foreach(string s in arr)
+                    {
+                        string k = s.Split("="[0])[0];
+                        string v = s.Split("="[0])[1];
+                        d[k] = v;
+                    }
+                    Oauth.requestToken = d["oauth_token"];
+                    Oauth.requestTokenSecret = d["oauth_token_secret"];
+                    callback(true, "https://api.twitter.com/oauth/authorize?oauth_token=" + Oauth.requestToken);
+                }
+                else
+                {
+                    callback(false, request.downloadHandler.text);
+                }
             }
+            
         }
+
         #endregion
 
         #region RequestHelperMethods
