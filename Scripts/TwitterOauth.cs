@@ -43,8 +43,21 @@ namespace Twity
         #region HelperMethods
         private static string GenerateSignature(SortedDictionary<string, string> parameters, string requestMethod, string requestURL)
         {
+            string oauth_token = "";
+            string oauth_token_secret = "";
+            if (accessToken != null && accessToken != "") 
+            {
+                oauth_token = accessToken;
+                oauth_token_secret = accessTokenSecret;
+            }
+            else if (requestToken != null && requestToken != "")
+            {
+                oauth_token = requestToken;
+                oauth_token_secret = requestTokenSecret;
+            }
+            
             AddDefaultOauthParams(parameters, consumerKey);
-            if (accessToken != null && accessToken != "") parameters.Add("oauth_token", accessToken);
+            parameters.Add("oauth_token", oauth_token);
 
             StringBuilder paramString = new StringBuilder();
             foreach (KeyValuePair<string, string> param in parameters)
@@ -57,7 +70,7 @@ namespace Twity
             string requestHeader = Helper.UrlEncode(requestMethod) + "&" + Helper.UrlEncode(requestURL);
             string signatureData = requestHeader + "&" + Helper.UrlEncode(paramString.ToString());
 
-            string signatureKey = Helper.UrlEncode(consumerSecret) + "&" + Helper.UrlEncode(accessTokenSecret);
+            string signatureKey = Helper.UrlEncode(consumerSecret) + "&" + Helper.UrlEncode(oauth_token_secret);
             HMACSHA1 hmacsha1 = new HMACSHA1(Encoding.ASCII.GetBytes(signatureKey));
             byte[] signatureBytes = hmacsha1.ComputeHash(Encoding.ASCII.GetBytes(signatureData));
             return Convert.ToBase64String(signatureBytes);

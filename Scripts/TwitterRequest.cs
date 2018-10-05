@@ -186,7 +186,44 @@ namespace Twity
                     callback(false, request.downloadHandler.text);
                 }
             }
+        }
+
+        public static IEnumerator GenerateAccessToken(string pin, TwitterCallback callback)
+        {
+            string url = "https://api.twitter.com/oauth/access_token";
+
+            SortedDictionary<string, string> p = new SortedDictionary<string, string>();
+            p.Add("oauth_verifier", pin);
+
+            WWWForm form = new WWWForm();
+            form.AddField("oauth_verifier", pin);
+
+            UnityWebRequest request = UnityWebRequest.Post(url, form);
+            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(p, "POST", url));
             
+            #if UNITY_2017_1
+                    yield return request.Send();
+            #endif
+            #if UNITY_2017_2_OR_NEWER
+                    yield return request.SendWebRequest();
+            #endif
+
+            if (request.isNetworkError)
+            {
+                callback(false, JsonHelper.ArrayToObject(request.error));
+            }
+            else
+            {
+                if (request.responseCode == 200 || request.responseCode == 201)
+                {
+                    callback(true, JsonHelper.ArrayToObject(request.downloadHandler.text));
+                }
+                else
+                {
+                    Debug.Log(request.responseCode);
+                    callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
+                }
+            }
         }
 
         #endregion
