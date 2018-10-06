@@ -144,10 +144,15 @@ namespace Twity
 
         public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback)
         {
+            yield return GenerateRequestToken(callback, "oob");
+        }
+
+        public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback, string callbackURL)
+        {
             string url = "https://api.twitter.com/oauth/request_token";
 
             SortedDictionary<string, string> p = new SortedDictionary<string, string>();
-            p.Add("oauth_callback", "oob");
+            p.Add("oauth_callback", callbackURL);
 
             WWWForm form = new WWWForm();
 
