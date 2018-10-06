@@ -192,6 +192,7 @@ namespace Twity
         {
             string url = "https://api.twitter.com/oauth/access_token";
 
+            Debug.Log(pin);
             SortedDictionary<string, string> p = new SortedDictionary<string, string>();
             p.Add("oauth_verifier", pin);
 
@@ -216,7 +217,18 @@ namespace Twity
             {
                 if (request.responseCode == 200 || request.responseCode == 201)
                 {
-                    callback(true, JsonHelper.ArrayToObject(request.downloadHandler.text));
+                    string[] arr = request.downloadHandler.text.Split("&"[0]);
+                    Dictionary<string, string> d = new Dictionary<string, string>();
+                    foreach(string s in arr)
+                    {
+                        string k = s.Split("="[0])[0];
+                        string v = s.Split("="[0])[1];
+                        d[k] = v;
+                    }
+                    Oauth.accessToken = d["oauth_token"];
+                    Oauth.accessTokenSecret = d["oauth_token_secret"];
+                    
+                    callback(true, "success");
                 }
                 else
                 {
