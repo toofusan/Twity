@@ -86,6 +86,7 @@ public class EventHandler : MonoBehaviour {
   void AccessTokenCallback(bool success) {
     if (!success) return;
     // When success, authorization is completed. You can make request to other endpoint.
+    // User's screen_name is in '`Twity.Client.screenName`.
   }
 }
 ```

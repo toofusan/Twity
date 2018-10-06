@@ -14,6 +14,8 @@ namespace Twity
     public class Client
     {
 
+        public static string screenName;
+
         #region API Methods
 
         public static IEnumerator Get(string APIPath, Dictionary<string, string> APIParams, TwitterCallback callback)
@@ -232,7 +234,7 @@ namespace Twity
                     }
                     Oauth.accessToken = d["oauth_token"];
                     Oauth.accessTokenSecret = d["oauth_token_secret"];
-                    
+                    screenName = d["screen_name"];
                     callback(true);
                 }
                 else
