@@ -142,6 +142,11 @@ namespace Twity
             }
         }
 
+        public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback)
+        {
+            yield return GenerateRequestToken(callback, "oob");
+        }
+
         public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback, string callbackURL)
         {
             string url = "https://api.twitter.com/oauth/request_token";
@@ -161,38 +166,94 @@ namespace Twity
                     yield return request.SendWebRequest();
             #endif
 
-            if (request.isNetworkError) callback(false);
-
-            if (request.responseCode == 200 || request.responseCode == 201)
-            {
-                string[] arr = request.downloadHandler.text.Split("&"[0]);
-                Dictionary<string, string> d = new Dictionary<string, string>();
-                foreach(string s in arr)
-                {
-                    string k = s.Split("="[0])[0];
-                    string v = s.Split("="[0])[1];
-                    d[k] = v;
-                }
-                Oauth.requestToken = d["oauth_token"];
-                Oauth.requestTokenSecret = d["oauth_token_secret"];
-                callback(true);
-            }
-            else
+            if (request.isNetworkError)
             {
                 callback(false);
             }
+            else
+            {
+                if (request.responseCode == 200 || request.responseCode == 201)
+                {
+                    string[] arr = request.downloadHandler.text.Split("&"[0]);
+                    Dictionary<string, string> d = new Dictionary<string, string>();
+                    foreach(string s in arr)
+                    {
+                        string k = s.Split("="[0])[0];
+                        string v = s.Split("="[0])[1];
+                        d[k] = v;
+                    }
+                    Oauth.requestToken = d["oauth_token"];
+                    Oauth.requestTokenSecret = d["oauth_token_secret"];
+                    Oauth.authorizeURL = "https://api.twitter.com/oauth/authorize?oauth_token=" + Oauth.requestToken;
+                    callback(true);
+                }
+                else
+                {
+                    callback(false);
+                }
+            }
         }
+
+        public static IEnumerator GenerateAccessToken(string pin, TwitterAuthenticationCallback callback)
+        {
+            string url = "https://api.twitter.com/oauth/access_token";
+
+            SortedDictionary<string, string> p = new SortedDictionary<string, string>();
+            p.Add("oauth_verifier", pin);
+
+            WWWForm form = new WWWForm();
+            form.AddField("oauth_verifier", pin);
+
+            UnityWebRequest request = UnityWebRequest.Post(url, form);
+            request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(p, "POST", url));
+            
+            #if UNITY_2017_1
+                    yield return request.Send();
+            #endif
+            #if UNITY_2017_2_OR_NEWER
+                    yield return request.SendWebRequest();
+            #endif
+
+            if (request.isNetworkError)
+            {
+                callback(false);
+            }
+            else
+            {
+                if (request.responseCode == 200 || request.responseCode == 201)
+                {
+                    string[] arr = request.downloadHandler.text.Split("&"[0]);
+                    Dictionary<string, string> d = new Dictionary<string, string>();
+                    foreach(string s in arr)
+                    {
+                        string k = s.Split("="[0])[0];
+                        string v = s.Split("="[0])[1];
+                        d[k] = v;
+                    }
+                    Oauth.accessToken = d["oauth_token"];
+                    Oauth.accessTokenSecret = d["oauth_token_secret"];
+                    
+                    callback(true);
+                }
+                else
+                {
+                    Debug.Log(request.responseCode);
+                    callback(false);
+                }
+            }
+        }
+
         #endregion
 
         #region RequestHelperMethods
 
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
-            if (Twity.Oauth.accessToken != null && Twity.Oauth.accessToken != "")
+            if (!string.IsNullOrEmpty(Oauth.accessToken))
             {
                 request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
             }
-            else if (Twity.Oauth.bearerToken != null && Twity.Oauth.bearerToken != "")
+            else if (!string.IsNullOrEmpty(Oauth.bearerToken))
             {
                 request.SetRequestHeader("Authorization", "Bearer " + Oauth.bearerToken);
             } 

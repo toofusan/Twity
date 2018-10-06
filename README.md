@@ -29,7 +29,7 @@ Inspired by [Let's Tweet In Unity](https://www.assetstore.unity3d.com/jp/#!/cont
 ## Usage
 
 ### Authentication
-if you have access_token and access_token_secret,
+If you have access_token and access_token_secret,
 ```C#
 public class EventHandler : MonoBehaviour {
   void Start () {
@@ -42,7 +42,8 @@ public class EventHandler : MonoBehaviour {
 ```
 
 
-if you have only consumer_key and consumer_secret,
+You can use application-only authentication.
+https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
 ```C#
 public class EventHandler : MonoBehaviour {
   void Start () {
@@ -55,26 +56,37 @@ public class EventHandler : MonoBehaviour {
   void Callback(bool success) {
     if (!success) return;
     // you write some request with application-only authentication
-    // https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
-	}
+  }
 }
 ```
 
 
-if you want request_token,
+You can use PIN-Based Oauth.
+https://developer.twitter.com/en/docs/basics/authentication/overview/pin-based-oauth
 ```C#
 public class EventHandler : MonoBehaviour {
   void Start () {
     Twity.Oauth.consumerKey       = "...";
     Twity.Oauth.consumerSecret    = "...";
     
-    StartCoroutine(Twity.Client.GenerateRequestToken(Callback, "callback URL of your app"));
+    StartCoroutine(Twity.Client.GenerateRequestToken(RequestTokenCallback));
   }
 
-  void Callback(bool success) {
+  void RequestCallback(bool success) {
     if (!success) return;
-    // hogehoge
-	}
+    // When request successes, you can display `Twity.Oauth.authorizeURL` to user so that they may use a web browser to access Twitter.
+  }
+  
+  void GenerateAccessToken(string pin) {
+    // pin is numbers displayed on web browser when user complete authorization.
+    
+    StartCoroutine(Twity.Client.GenerateAccessToken(pin, AccessTokenCallback));
+  }
+  
+  void AccessTokenCallback(bool success) {
+    if (!success) return;
+    // When success, authorization is completed. You can make request to other endpoint.
+  }
 }
 ```
 
