@@ -20,6 +20,7 @@ namespace Twity
 
         public static string requestToken {get; set;}
         public static string requestTokenSecret {get; set;}
+        public static string authorizeURL { get; set; }
         #endregion
 
         #region Public Method
@@ -45,12 +46,12 @@ namespace Twity
         {
             string oauth_token = "";
             string oauth_token_secret = "";
-            if (accessToken != null && accessToken != "") 
+            if (!string.IsNullOrEmpty(accessToken)) 
             {
                 oauth_token = accessToken;
                 oauth_token_secret = accessTokenSecret;
             }
-            else if (requestToken != null && requestToken != "")
+            else if (!string.IsNullOrEmpty(requestToken))
             {
                 oauth_token = requestToken;
                 oauth_token_secret = requestTokenSecret;
