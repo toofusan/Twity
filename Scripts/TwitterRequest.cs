@@ -142,7 +142,7 @@ namespace Twity
             }
         }
 
-        public static IEnumerator GenerateRequestToken(TwitterCallback callback)
+        public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback)
         {
             string url = "https://api.twitter.com/oauth/request_token";
 
@@ -163,7 +163,7 @@ namespace Twity
 
             if (request.isNetworkError)
             {
-                callback(false, request.error);
+                callback(false);
             }
             else
             {
@@ -179,20 +179,20 @@ namespace Twity
                     }
                     Oauth.requestToken = d["oauth_token"];
                     Oauth.requestTokenSecret = d["oauth_token_secret"];
-                    callback(true, "https://api.twitter.com/oauth/authorize?oauth_token=" + Oauth.requestToken);
+                    Oauth.authorizeURL = "https://api.twitter.com/oauth/authorize?oauth_token=" + Oauth.requestToken;
+                    callback(true);
                 }
                 else
                 {
-                    callback(false, request.downloadHandler.text);
+                    callback(false);
                 }
             }
         }
 
-        public static IEnumerator GenerateAccessToken(string pin, TwitterCallback callback)
+        public static IEnumerator GenerateAccessToken(string pin, TwitterAuthenticationCallback callback)
         {
             string url = "https://api.twitter.com/oauth/access_token";
 
-            Debug.Log(pin);
             SortedDictionary<string, string> p = new SortedDictionary<string, string>();
             p.Add("oauth_verifier", pin);
 
@@ -211,7 +211,7 @@ namespace Twity
 
             if (request.isNetworkError)
             {
-                callback(false, JsonHelper.ArrayToObject(request.error));
+                callback(false);
             }
             else
             {
@@ -228,12 +228,12 @@ namespace Twity
                     Oauth.accessToken = d["oauth_token"];
                     Oauth.accessTokenSecret = d["oauth_token_secret"];
                     
-                    callback(true, "success");
+                    callback(true);
                 }
                 else
                 {
                     Debug.Log(request.responseCode);
-                    callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
+                    callback(false);
                 }
             }
         }
@@ -244,11 +244,11 @@ namespace Twity
 
         private static IEnumerator SendRequest(UnityWebRequest request, SortedDictionary<string, string> parameters, string method, string requestURL, TwitterCallback callback)
         {
-            if (Twity.Oauth.accessToken != null && Twity.Oauth.accessToken != "")
+            if (!string.IsNullOrEmpty(Oauth.accessToken))
             {
                 request.SetRequestHeader("Authorization", Oauth.GenerateHeaderWithAccessToken(parameters, method, requestURL));
             }
-            else if (Twity.Oauth.bearerToken != null && Twity.Oauth.bearerToken != "")
+            else if (!string.IsNullOrEmpty(Oauth.bearerToken))
             {
                 request.SetRequestHeader("Authorization", "Bearer " + Oauth.bearerToken);
             } 
