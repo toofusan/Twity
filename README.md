@@ -317,5 +317,4 @@ You can modify `DataModels/Responses/` to get a response item.
 
 
 ## License
-- There are some modified code from other library. Check "Scripts/TwitterOauth.cs" and "Helpers/TwitterHelper.cs".
-- For other parts, MIT.
+MIT
