@@ -239,7 +239,6 @@ namespace Twity
                 }
                 else
                 {
-                    Debug.Log(request.responseCode);
                     callback(false);
                 }
             }
@@ -279,7 +278,6 @@ namespace Twity
                 }
                 else
                 {
-                    Debug.Log(request.responseCode);
                     callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
                 }
             }
