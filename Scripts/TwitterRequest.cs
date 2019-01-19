@@ -152,6 +152,7 @@ namespace Twity
         public static IEnumerator GenerateRequestToken(TwitterAuthenticationCallback callback, string callbackURL)
         {
             string url = "https://api.twitter.com/oauth/request_token";
+            ClearTokens();
 
             SortedDictionary<string, string> p = new SortedDictionary<string, string>();
             p.Add("oauth_callback", callbackURL);
@@ -281,6 +282,13 @@ namespace Twity
                     callback(false, JsonHelper.ArrayToObject(request.downloadHandler.text));
                 }
             }
+        }
+
+        private static void ClearTokens() {
+            Oauth.requestToken = String.Empty;
+            Oauth.requestTokenSecret = String.Empty;
+            Oauth.accessToken = String.Empty;
+            Oauth.accessTokenSecret = String.Empty;
         }
 
         #endregion
