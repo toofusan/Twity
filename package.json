@@ -1,0 +1,9 @@
+{
+  "name"        : "toofusan.twity",
+  "version"     : "1.0.0",
+  "displayName" : "Twity",
+  "description" : "Twitter API Client for Unity",
+  "unity"       : "2017.1",
+  "keywords"    : [ "utilities", "social media", "twitter" ],
+  "author"      : { "name": "Toru Yoshioka" }
+}
